@@ -39,7 +39,7 @@ dist-ssr
 /coverage
 
 # next.js
-*/.next/
+/server/.next/
 /out/
 
 # production
