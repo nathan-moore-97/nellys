@@ -1,0 +1,4 @@
+{
+  "/newsletter/route": "app/newsletter/route.js",
+  "/route": "app/route.js"
+}
