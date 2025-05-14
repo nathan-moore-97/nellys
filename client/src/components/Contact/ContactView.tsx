@@ -1,16 +1,16 @@
 import { Col, Container, Ratio, Row } from "react-bootstrap";
-import NellysNewsletter from "../NellysNewsletter";
+import NewsletterView from "../Newsletter/NewsletterView";
 
-function Contact() {
+function ContactView() {
     const VITE_GMAPS_API_KEY = import.meta.env.VITE_GMAPS_API_KEY;
 
     return (
         <Container fluid="md" className="px-3 px-md-4 py-4">
             {/* Title Row - Always stays at top */}
-            <Row>
+            <Row className="mb-4">
                 <Col>
                     <h1 className="mb-3">Contact Us</h1>
-                    <p className="lead mb-4">Located in the historical Pope-Leighy house, we do lots of needlework stuff and are happy to chit chat about it!</p>
+                    <p className="lead">Located in the historical Pope-Leighy house, we do lots of needlework stuff and are happy to chit chat about it!</p>
                 </Col>
             </Row>
 
@@ -35,7 +35,7 @@ function Contact() {
                         </div>
                     </div>
                     
-                    <NellysNewsletter />
+                    <NewsletterView />
                 </Col>
 
                 {/* Map Column - Comes second in mobile */}
@@ -58,4 +58,4 @@ function Contact() {
     );
 }
 
-export default Contact;
+export default ContactView;

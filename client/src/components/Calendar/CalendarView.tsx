@@ -1,5 +1,5 @@
 
-function Calendar() {
+function CalendarView() {
     return (
         <>
         <h1>Heres whats coming up</h1>
@@ -15,4 +15,4 @@ function Calendar() {
     );
 }
 
-export default Calendar;
+export default CalendarView;

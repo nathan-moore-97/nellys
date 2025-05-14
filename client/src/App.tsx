@@ -2,21 +2,21 @@
 import './styles/App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import Home from './components/pages/Home'
-import Contact from './components/pages/Contact'
-import Donate from './components/pages/Donate'
-import Calendar from './components/pages/Calendar'
-import NellysNavbar from './components/NellysNavbar'
+import HomeView from './components/Home/HomeView'
+import ContactView from './components/Contact/ContactView'
+import DonateView from './components/Donate/DonateView'
+import CalendarView from './components/Calendar/CalendarView'
+import NavbarView from './components/Navbar/NavbarView'
 
 function App() {
   return (
     <Router>
-      <NellysNavbar />
+      <NavbarView />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/donate" element={<Donate />} />
+        <Route path="/" element={<HomeView />} />
+        <Route path="/contact" element={<ContactView />} />
+        <Route path="/calendar" element={<CalendarView />} />
+        <Route path="/donate" element={<DonateView />} /> 
       </Routes>
     </Router>
   )

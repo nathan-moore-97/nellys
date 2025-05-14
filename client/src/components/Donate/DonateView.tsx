@@ -1,8 +1,8 @@
 
-function Home() {
+function DonateView() {
     return (
         <>
-        <h1>Welcome to Nellys Needlers</h1>
+        <h1>Contribute!</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
             sed do eiusmod tempor incididunt ut labore et dolore
              magna aliqua. Ut enim ad minim veniam, quis nostrud 
@@ -15,4 +15,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default DonateView;

@@ -3,7 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 
-function NellysNavbar() {
+function NavbarView() {
     return (
         <Navbar bg="primary" variant="dark" expand="sm" className="mb-4">
         <Container>
@@ -25,4 +25,4 @@ function NellysNavbar() {
     );
 }
 
-export default NellysNavbar;
+export default NavbarView;
