@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
-    {"offset": {"line": 60, "column": 0}, "map": {"version":3,"sources":["file:///C:/per/cs/nellys/server/src/app/newsletter/route.ts"],"sourcesContent":["import { NextRequest, NextResponse } from \"next/server\";\r\n\r\nexport async function POST(request: NextRequest) {\r\n    const body: NewsletterSignup = await request.json();\r\n    const service = new NewsletterService();\r\n\r\n    return NextResponse.json(\r\n        {\r\n            success: service.subscribe(body),\r\n            data: body\r\n        },\r\n        { status: 200 }\r\n    );\r\n}"],"names":[],"mappings":";;;AAAA;;AAEO,eAAe,KAAK,OAAoB;IAC3C,MAAM,OAAyB,MAAM,QAAQ,IAAI;IACjD,MAAM,UAAU,IAAI;IAEpB,OAAO,gIAAA,CAAA,eAAY,CAAC,IAAI,CACpB;QACI,SAAS,QAAQ,SAAS,CAAC;QAC3B,MAAM;IACV,GACA;QAAE,QAAQ;IAAI;AAEtB","debugId":null}}]
-}
