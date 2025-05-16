@@ -90,7 +90,7 @@ function UnsubscribeView() {
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Control as="textarea" rows={3} value={formData.reason} onChange={handleChange}
-                        name="greeting" placeholder="Tell us why you're leaving" />
+                        name="reason" placeholder="Tell us why you're leaving" />
                 </Form.Group>
                 <Button type="submit" disabled={loading}>
                     {loading ? 'Submitting...' : 'Submit'}
