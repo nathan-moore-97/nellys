@@ -111,7 +111,7 @@ function NewsletterView() {
         <>
         <h3>Join our Newsletter</h3>
         <Form onSubmit={handleSubmit}>
-            <Row className="mb-3">
+            <Row>
                 <Col>
                     <Form.Group className="mb-3" controlId="formFirstName">
                         <Form.Label>First Name</Form.Label>
