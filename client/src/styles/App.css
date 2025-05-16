@@ -1,5 +1,21 @@
 #root {
-  max-width: 80%;
   margin: 0 auto;
-  padding: 2rem;
+}
+
+.fixed-footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  background-color: rgb(51, 51, 51);
+  color: lightgrey;
+  text-align: center;
+}
+
+.page-content {
+  margin-bottom: 5%;
+  margin-top: 2%;
+}
+
+.navbar {
+  text-align: center;
 }

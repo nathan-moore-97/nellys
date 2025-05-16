@@ -1,23 +1,29 @@
-
-import './styles/App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import HomeView from './components/Home/HomeView'
-import ContactView from './components/Contact/ContactView'
-import DonateView from './components/Donate/DonateView'
-import CalendarView from './components/Calendar/CalendarView'
-import NavbarView from './components/Navbar/NavbarView'
+import './styles/App.css'
+import HomePage from './components/pages/HomePage'
+import ContactPage from './components/pages/ContactPage'
+import DonatePage from './components/pages/DonatePage'
+import CalendarPage from './components/pages/CalendarPage'
+import NavbarView from './components/NavbarView'
+import FooterView from './components/FooterView'
+import { Container } from 'react-bootstrap'
+import UnsubscribePage from './components/pages/UnsubscribePage'
 
 function App() {
   return (
     <Router>
       <NavbarView />
-      <Routes>
-        <Route path="/" element={<HomeView />} />
-        <Route path="/contact" element={<ContactView />} />
-        <Route path="/calendar" element={<CalendarView />} />
-        <Route path="/donate" element={<DonateView />} /> 
-      </Routes>
+      <Container className='page-content'>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/donate" element={<DonatePage />} />
+          <Route path="/unsubscribe" element={<UnsubscribePage />} />
+        </Routes>
+      </Container>
+      <FooterView />
     </Router>
   )
 }

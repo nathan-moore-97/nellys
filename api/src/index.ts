@@ -1,15 +1,20 @@
 import * as express from "express"
+import * as cors from "cors"
 import * as bodyParser from "body-parser"
 import { Request, Response } from "express"
+import * as dotenv from "dotenv";
 import { AppDataSource } from "./data-source"
 import { Routes } from "./routes"
-import { User } from "./entity/User"
+
 
 AppDataSource.initialize().then(async () => {
 
-    // create express app
-    const app = express()
-    app.use(bodyParser.json())
+    dotenv.config();
+
+    const app = express();
+
+    app.use(cors());
+    app.use(bodyParser.json());
 
     // register express routes from defined application routes
     Routes.forEach(route => {
@@ -22,31 +27,9 @@ AppDataSource.initialize().then(async () => {
                 res.json(result)
             }
         })
-    })
-
-    // setup express app here
-    // ...
-
-    // start express server
-    app.listen(3001)
-
-    // // insert new users for test
-    // await AppDataSource.manager.save(
-    //     AppDataSource.manager.create(User, {
-    //         firstName: "Timber",
-    //         lastName: "Saw",
-    //         age: 27
-    //     })
-    // )
-
-    // await AppDataSource.manager.save(
-    //     AppDataSource.manager.create(User, {
-    //         firstName: "Phantom",
-    //         lastName: "Assassin",
-    //         age: 24
-    //     })
-    // )
-
-    console.log("Express server has started on port 3001. Open http://localhost:3001/users to see results")
+    });
+    
+    app.listen(3000);
+    console.log("Server started at http://localhost:3000/");
 
 }).catch(error => console.log(error))

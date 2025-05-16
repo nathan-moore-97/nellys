@@ -1,8 +1,8 @@
 
-function CalendarView() {
+function HomePage() {
     return (
         <>
-        <h1>Heres whats coming up</h1>
+        <h1>Welcome to Nellys Needlers</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
             sed do eiusmod tempor incididunt ut labore et dolore
              magna aliqua. Ut enim ad minim veniam, quis nostrud 
@@ -15,4 +15,4 @@ function CalendarView() {
     );
 }
 
-export default CalendarView;
+export default HomePage;

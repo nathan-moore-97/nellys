@@ -1,34 +1,60 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Alert, Button, Col, Form, Row } from "react-bootstrap";
 
-import { subscribeToNewsletter } from "./NewsletterController";
-import type { NewsletterSignup } from "./NewsletterModel";
+interface SignupRequest {
+    firstName: string,
+    lastName: string,
+    email: string,
+    greeting: string
+}
+
+interface SignupResponse {
+    error: string | null,
+}
+
+const API_URL = import.meta.env.VITE_API_URL
+
+async function subscribeToNewsletter(params: SignupRequest): Promise<SignupResponse> {
+
+    const response = await fetch(`${API_URL}/newsletter`, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: JSON.stringify(params)
+    });
+
+    return await response.json() as SignupResponse;
+}
+
+
 
 function NewsletterView() {
 
-    const [formData, setFormData] = useState<NewsletterSignup>({
+    const [formData, setFormData] = useState<SignupRequest>({
         firstName: '',
         lastName: '',
-        email: ''
-    })
+        email: '',
+        greeting: '',
+    });
 
     const [loading, setLoading] = useState<boolean>(false);
     const [submitted, setSubmitted] = useState<boolean>(false);
-    const [err, setErr] = useState<boolean>(false);
+    const [err, setErr] = useState<string | null>(null);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
-        try {
-            const subscriptionStatus = await subscribeToNewsletter(formData);
-            setSubmitted(subscriptionStatus);
-        } catch (err) {
-            console.error(err);
-            setErr(true);
-        } finally {
-            setLoading(false);
+        const resp = await subscribeToNewsletter(formData);
+
+        if (resp!.error) {
+            setErr(resp!.error)
+        } else {
+            setSubmitted(true);
         }
+
+        setLoading(false);
     }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +64,7 @@ function NewsletterView() {
             [name]: value
         }));
     };
+
     /**
      * User would like to submit again, reset control values
      */
@@ -45,6 +72,12 @@ function NewsletterView() {
         e.preventDefault();
         setLoading(false);
         setSubmitted(false);
+        setFormData({
+            firstName: '',
+            lastName: '',
+            email: '',
+            greeting: '',
+        })
     }
 
     /**
@@ -53,9 +86,7 @@ function NewsletterView() {
     if (err) {
         return (
             <>
-                <Alert variant="danger">
-                    Something went wrong, try again later.
-                </Alert>
+                <Alert variant="danger">{err}</Alert>
             </>
         );
     }
@@ -101,12 +132,18 @@ function NewsletterView() {
                 <Form.Control type="email" value={formData.email} onChange={handleChange} 
                     name="email" placeholder="jdoe@email.com" required />
             </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label>Greeting</Form.Label>
+                <Form.Control as="textarea" rows={3} value={formData.greeting} onChange={handleChange}
+                    name="greeting" placeholder="Tell us what brought you here!" />
+            </Form.Group>
             <Button type="submit" disabled={loading}>
                 {loading ? 'Submitting...' : 'Sign Up'}
             </Button>         
         </Form>
         </>
     );
+    
 }
 
 export default NewsletterView;

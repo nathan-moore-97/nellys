@@ -1,18 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, Column, PrimaryColumn } from "typeorm"
 
 @Entity()
 export class NewsletterSignup {
-
-    @PrimaryGeneratedColumn()
-    id: number
-
-    @Column()
-    firstName: string
+    @PrimaryColumn()
+    email: string;
 
     @Column()
-    lastName: string
+    firstName: string;
 
     @Column()
-    email: number
+    lastName: string;
 
+    @Column({nullable: true})
+    greeting: string | null;
+
+    @Column({default: true})
+    isActive: boolean;
+
+    @Column({nullable: true})
+    cancellationReason: string;
 }
+
