@@ -1,8 +1,8 @@
-import * as express from "express"
-import * as cors from "cors"
-import * as bodyParser from "body-parser"
+import express from "express"
+import cors from "cors"
+import bodyParser from "body-parser"
 import { Request, Response } from "express"
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 import { AppDataSource } from "./data-source"
 import { Routes } from "./routes"
 
@@ -32,4 +32,4 @@ AppDataSource.initialize().then(async () => {
     app.listen(3000);
     console.log("Server started at http://localhost:3000/");
 
-}).catch(error => console.log(error))
+}).catch(error => console.error(error))

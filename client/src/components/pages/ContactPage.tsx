@@ -2,7 +2,6 @@ import { Col, Row } from "react-bootstrap";
 import NewsletterView from "../NewsletterView";
 import GoogleMapsView from "../GoogleMapsView";
 import AddressView from "../AddressView";
-import { Link } from "react-router-dom";
 
 function ContactPage() {
 
@@ -20,8 +19,7 @@ function ContactPage() {
                 {/* Contact Info Column - Comes first in mobile */}
                 <Col md={6}>
                     <AddressView />
-                    <NewsletterView subscribing={true}/>
-                    <Link to="/unsubscribe">Unsubscribe</Link>
+                    <NewsletterView />
                 </Col>
 
                 {/* Map Column - Comes second in mobile */}

@@ -1,8 +1,12 @@
-import { Entity, Column, PrimaryColumn } from "typeorm"
+import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class NewsletterSignup {
-    @PrimaryColumn()
+
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({unique: true})
     email: string;
 
     @Column()

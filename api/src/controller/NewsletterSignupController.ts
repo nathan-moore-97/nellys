@@ -1,7 +1,8 @@
 import { AppDataSource } from "../data-source"
 import { NextFunction, Request, Response } from "express"
 import { NewsletterSignup } from "../entity/NewsletterSignup";
-import { EmailerService } from "../services/EmailerService";
+import { EmailerService } from "../email/EmailerService";
+import { EmailDirector } from "../email/EmailBuilder";
 
 interface SignupResponse {
     error: string | null;
@@ -10,7 +11,7 @@ interface SignupResponse {
 export class NewsletterSignupController {
 
     private signupRepository = AppDataSource.getRepository(NewsletterSignup);
-    private email: EmailerService = new EmailerService();
+    private emailer: EmailerService = new EmailerService();
 
     async all(request: Request, response: Response, next: NextFunction) {
         return this.signupRepository.find();
@@ -23,6 +24,8 @@ export class NewsletterSignupController {
         };
 
         try {
+            let signedUp: boolean = false;
+
             const { firstName, lastName, email, greeting } = request.body;
             
             const signup = new NewsletterSignup();
@@ -42,17 +45,20 @@ export class NewsletterSignupController {
                     user.greeting = signup.greeting;
                     user.firstName = signup.firstName;
                     user.lastName = signup.lastName;
-
+                    signedUp = true;
                     await this.signupRepository.save(user);
                 }
             } else {
                 await this.signupRepository.save(signup);
+                signedUp = true;
             }
 
-            // Send welcome email
-            this.email.send(signup.email, `Welcome, ${signup.firstName}!`);
-            // Send email to Admin
-            this.email.send(process.env.NEWSLETTER_ADMIN_EMAIL, `${signup.email} has subscribed.`);
+            if (signedUp) {
+                // Send welcome email
+                this.emailer.send(signup.email, EmailDirector.welcome(signup));
+                // Send email to Admin
+                this.emailer.send(process.env.NEWSLETTER_ADMIN_EMAIL, EmailDirector.signUpNotification(signup));
+            }
 
             response.json(resp);
             
@@ -84,7 +90,9 @@ export class NewsletterSignupController {
                 await this.signupRepository.save(userToRemove);
 
                 // Send email to admin
-                this.email.send(process.env.NEWSLETTER_ADMIN_EMAIL, `${userToRemove.email} has unsubscribed.`);
+                this.emailer.send(process.env.NEWSLETTER_ADMIN_EMAIL, EmailDirector.unsubscribeNotification(userToRemove));
+                // Send user email warning it may take a few days
+                this.emailer.send(userToRemove.email, EmailDirector.goodbye(userToRemove));
             }
             
         } catch (error) {
