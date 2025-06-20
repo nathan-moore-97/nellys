@@ -69,8 +69,7 @@ export class DeploymentStack extends cdk.Stack {
         });
 
         reactInstance.addUserData(
-            'sudo yum install -y git',
-            'sudo yum install -y ngninx',
+            'sudo yum install -y git nginx',
             'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash',
             'source ~/.bashrc',
             'nvm install --lts',
@@ -78,9 +77,10 @@ export class DeploymentStack extends cdk.Stack {
             'cd nellys/client/ && npm install && npm run build',
             'sudo mkdir -p /var/www/nellys-app',
             'sudo cp -r dist/* /var/www/nellys-app/',
-            'sudo '
-            // 'sudo cp -r dist/* /usr/share/nginx/html/',
-            // 'sudo systemctl start nginx'
+            'cd ../infra',
+            'sudo mkdir /etc/nginx/default.d/',
+            'sudo cp nginx/default /etc/nginx/default.d/default',
+            'sudo systemctl start nginx'
         );
 
         apiInstance.addUserData(
