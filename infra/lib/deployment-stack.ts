@@ -78,7 +78,6 @@ export class DeploymentStack extends cdk.Stack {
             'sudo mkdir -p /var/www/nellys-app',
             'sudo cp -r dist/* /var/www/nellys-app/',
             'cd ../infra',
-            // 'sudo cp nginx/nginx.conf /etc/nginx/',
             'sudo systemctl start nginx'
         );
 
