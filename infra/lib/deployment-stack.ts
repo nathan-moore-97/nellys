@@ -78,9 +78,8 @@ export class DeploymentStack extends cdk.Stack {
             'sudo mkdir -p /var/www/nellys-app',
             'sudo cp -r dist/* /var/www/nellys-app/',
             'cd ../infra',
-            // 'sudo mkdir /etc/nginx/default.d/',
-            // 'sudo cp nginx/default /etc/nginx/default.d/default',
-            // 'sudo systemctl start nginx
+            // 'sudo cp nginx/nginx.conf /etc/nginx/',
+            'sudo systemctl start nginx'
         );
 
         apiInstance.addUserData(
