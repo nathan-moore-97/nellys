@@ -73,3 +73,12 @@ tmp/
 temp/
 
 database.sqlite
+
+*.js
+!jest.config.js
+*.d.ts
+node_modules
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out

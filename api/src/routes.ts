@@ -1,4 +1,5 @@
 import { NewsletterSignupController } from "./controller/NewsletterSignupController"
+import { ApiHealthController } from "./controller/ApiHealthController";
 
 export const Routes = [
     {
@@ -17,6 +18,12 @@ export const Routes = [
         method: "get",
         route: "/newsletter",
         controller: NewsletterSignupController,
+        action: "all"
+    },
+    {
+        method: "get",
+        route: "/health",
+        controller: ApiHealthController,
         action: "all"
     }
 ]
