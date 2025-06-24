@@ -3,6 +3,12 @@ import { Construct } from 'constructs';
 
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 
+import * as dotenv from 'dotenv';
+
+dotenv.config({
+    path: '../client/.env',
+});
+
 export class DeploymentStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
@@ -75,13 +81,15 @@ export class DeploymentStack extends cdk.Stack {
             `[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"`,
             'nvm install --lts',
             'git clone https://github.com/nathan-moore-97/nellys',
-            'cd nellys/client/ && npm install && npm run build',
+            'cd nellys/client/',
+            `echo VITE_GMAPS_API_KEY=${process.env.VITE_GMAPS_API_KEY} >> .env`,
+            `echo VITE_GMAPS_PLACE_ID=${process.env.VITE_GMAPS_PLACE_ID} >> .env`,
+            `echo VITE_API_URL=${apiInstance.instancePublicIp} >> .env`,
+            'npm install && npm run build',
             'sudo mkdir -p /var/www/nellys-app',
             'sudo cp -r dist/* /var/www/nellys-app/',
             'cd ../infra',
             'sudo cp nginx/nginx.conf /etc/nginx/',
-
-            
             'sudo systemctl start nginx'
         );
 
@@ -99,11 +107,5 @@ export class DeploymentStack extends cdk.Stack {
         new cdk.CfnOutput(this, "ReactAppUrl", {
             value: `http://${reactInstance.instancePublicIp}`,
         });
-
-        new cdk.CfnOutput(this, "ApiUrl", {
-            value: `http://${apiInstance.instancePublicIp}`
-        });
-
-
     }
 }
