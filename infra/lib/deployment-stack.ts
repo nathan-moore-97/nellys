@@ -43,11 +43,10 @@ export class DeploymentStack extends cdk.Stack {
         reactSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.HTTPS);
         reactSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));
 
-        apiSG.connections.allowFrom(reactSG, ec2.Port.tcp(3000));
+        apiSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(3000));
         apiSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));
 
-
-        // VM for Frontend
+        // Client
         const reactInstance = new ec2.Instance(this, "ReactInstance", {
             vpc,
             instanceType: ec2.InstanceType.of(ec2.InstanceClass.T2, ec2.InstanceSize.MICRO),
@@ -84,7 +83,7 @@ export class DeploymentStack extends cdk.Stack {
             'cd nellys/client/',
             `echo VITE_GMAPS_API_KEY=${process.env.VITE_GMAPS_API_KEY} >> .env`,
             `echo VITE_GMAPS_PLACE_ID=${process.env.VITE_GMAPS_PLACE_ID} >> .env`,
-            `echo VITE_API_URL=${apiInstance.instancePublicIp} >> .env`,
+            `echo VITE_API_URL=http://${apiInstance.instancePublicIp}:3000 >> .env`,
             'npm install && npm run build',
             'sudo mkdir -p /var/www/nellys-app',
             'sudo cp -r dist/* /var/www/nellys-app/',
@@ -106,6 +105,10 @@ export class DeploymentStack extends cdk.Stack {
 
         new cdk.CfnOutput(this, "ReactAppUrl", {
             value: `http://${reactInstance.instancePublicIp}`,
+        });
+
+        new cdk.CfnOutput(this, "API", {
+            value: `http://${apiInstance.instancePublicIp}`,
         });
     }
 }
