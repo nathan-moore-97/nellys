@@ -15,7 +15,7 @@ export class DeploymentStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
-        // Create VPC
+        // VPC
         const vpc = new ec2.Vpc(this, 'NellysDevVPC', {
             maxAzs: 1,
             subnetConfiguration: [
@@ -28,47 +28,39 @@ export class DeploymentStack extends cdk.Stack {
         });
 
         // Security Groups
-        const apiSG = new ec2.SecurityGroup(this, "ApiSecurityGroup", {
+        const backendSG = new ec2.SecurityGroup(this, "ApiSecurityGroup", {
             vpc,
             description: "Security Group For API Instances",
             allowAllOutbound: true,
         });
 
 
-        const reactSG = new ec2.SecurityGroup(this, "ClientSecurityGroup", {
+        const frontendSG = new ec2.SecurityGroup(this, "ClientSecurityGroup", {
             vpc,
             description: "Security group for frontend react app",
             allowAllOutbound: true,
         });
 
-        reactSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.HTTP);
-        reactSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.HTTPS);
-        reactSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));
+        frontendSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.HTTP);
+        frontendSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));
 
-        apiSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(3000));
-        apiSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));
+        backendSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(3000));
+        backendSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));
 
-        // Hosted Zone for DNS
-        const hostedZone = new route53.HostedZone(this, 'NellysDevHostedZone', {
-            zoneName: 'nellysdev.org',
-            comment: 'nellysdev.org Hosted zone'
-        })
-
-        // Client
-        const reactInstance = new ec2.Instance(this, "ReactInstance", {
+        // Compute Instances
+        const frontendInstance = new ec2.Instance(this, "FrontendInstance", {
             vpc,
             instanceType: ec2.InstanceType.of(ec2.InstanceClass.T2, ec2.InstanceSize.MICRO),
             machineImage: ec2.MachineImage.latestAmazonLinux2023(),
-            securityGroup: reactSG,
+            securityGroup: frontendSG,
             vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC }
         });
 
-        // API
-        const apiInstance = new ec2.Instance(this, "APIInstance", {
+        const backendInstance = new ec2.Instance(this, "BackendInstance", {
             vpc,
             instanceType: ec2.InstanceType.of(ec2.InstanceClass.T2, ec2.InstanceSize.MICRO),
             machineImage: ec2.MachineImage.latestAmazonLinux2023(),
-            securityGroup: apiSG,
+            securityGroup: backendSG,
             vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
             blockDevices: [{
                 deviceName: "/dev/xvdb",
@@ -80,23 +72,28 @@ export class DeploymentStack extends cdk.Stack {
         });
 
         // DNS
-        new route53.ARecord(this, 'ReactARecord', {
+        const hostedZone = new route53.HostedZone(this, 'HostedZone', {
+            zoneName: 'nellysdev.org',
+            comment: 'nellysdev.org Hosted zone'
+        });
+
+        new route53.ARecord(this, 'FrontendARecord', {
             zone: hostedZone,
-            target: route53.RecordTarget.fromIpAddresses(reactInstance.instancePublicIp),
+            target: route53.RecordTarget.fromIpAddresses(frontendInstance.instancePublicIp),
             recordName: 'nellysdev.org',
             ttl: cdk.Duration.minutes(5),
         });
 
-        new route53.ARecord(this, 'APIARecord', {
+        new route53.ARecord(this, 'BackendARecord', {
             zone: hostedZone,
-            target: route53.RecordTarget.fromIpAddresses(apiInstance.instancePublicIp),
+            target: route53.RecordTarget.fromValues(backendInstance.instancePublicIp),
             recordName: 'api.nellysdev.org',
             ttl: cdk.Duration.minutes(5),
         });
 
         // https://stackoverflow.com/questions/54415841/nodejs-not-installed-successfully-in-aws-ec2-inside-user-data
 
-        reactInstance.addUserData(
+        frontendInstance.addUserData(
             'sudo yum install -y git nginx',
             'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash',
             `export NVM_DIR="$HOME/.nvm"`,
@@ -106,7 +103,7 @@ export class DeploymentStack extends cdk.Stack {
             'cd nellys/client/',
             `echo VITE_GMAPS_API_KEY=${process.env.VITE_GMAPS_API_KEY} >> .env`,
             `echo VITE_GMAPS_PLACE_ID=${process.env.VITE_GMAPS_PLACE_ID} >> .env`,
-            `echo VITE_API_URL=http://${apiInstance.instancePublicIp}:3000 >> .env`,
+            `echo VITE_API_URL=http://${backendInstance.instancePublicIp}:3000 >> .env`,
             'npm install && npm run build',
             'sudo mkdir -p /var/www/nellys-app',
             'sudo cp -r dist/* /var/www/nellys-app/',
@@ -115,7 +112,7 @@ export class DeploymentStack extends cdk.Stack {
             'sudo systemctl start nginx'
         );
 
-        apiInstance.addUserData(
+        backendInstance.addUserData(
             'sudo yum install -y git',
             'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash',
             `export NVM_DIR="$HOME/.nvm"`,
@@ -126,12 +123,12 @@ export class DeploymentStack extends cdk.Stack {
             'npm run start',
         );
 
-        new cdk.CfnOutput(this, "ReactAppUrl", {
-            value: `http://${reactInstance.instancePublicIp}`,
+        new cdk.CfnOutput(this, "Frontend", {
+            value: `http://${frontendInstance.instancePublicDnsName} (${frontendInstance.instancePublicIp})`,
         });
 
-        new cdk.CfnOutput(this, "API", {
-            value: `http://${apiInstance.instancePublicIp}`,
+        new cdk.CfnOutput(this, "Backend", {
+            value: `http://${backendInstance.instancePublicDnsName} (${backendInstance.instancePublicIp})`,
         });
     }
 }
