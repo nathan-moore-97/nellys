@@ -1,7 +1,9 @@
-import * as cdk from 'aws-cdk-lib';
+
 import { Construct } from 'constructs';
 
+import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as route53 from 'aws-cdk-lib/aws-route53';
 
 import * as dotenv from 'dotenv';
 
@@ -46,6 +48,12 @@ export class DeploymentStack extends cdk.Stack {
         apiSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(3000));
         apiSG.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));
 
+        // Hosted Zone for DNS
+        const hostedZone = new route53.HostedZone(this, 'NellysDevHostedZone', {
+            zoneName: 'nellysdev.org',
+            comment: 'nellysdev.org Hosted zone'
+        })
+
         // Client
         const reactInstance = new ec2.Instance(this, "ReactInstance", {
             vpc,
@@ -69,6 +77,21 @@ export class DeploymentStack extends cdk.Stack {
                     deleteOnTermination: false,
                 })
             }]
+        });
+
+        // DNS
+        new route53.ARecord(this, 'ReactARecord', {
+            zone: hostedZone,
+            target: route53.RecordTarget.fromIpAddresses(reactInstance.instancePublicIp),
+            recordName: 'nellysdev.org',
+            ttl: cdk.Duration.minutes(5),
+        });
+
+        new route53.ARecord(this, 'APIARecord', {
+            zone: hostedZone,
+            target: route53.RecordTarget.fromIpAddresses(apiInstance.instancePublicIp),
+            recordName: 'api.nellysdev.org',
+            ttl: cdk.Duration.minutes(5),
         });
 
         // https://stackoverflow.com/questions/54415841/nodejs-not-installed-successfully-in-aws-ec2-inside-user-data
