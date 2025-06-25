@@ -15,6 +15,7 @@ export const Routes = [
         action: "remove"
     },
     {
+        // TODO: secure this endpoint behind some kind of authentication
         method: "get",
         route: "/newsletter",
         controller: NewsletterSignupController,
