@@ -113,14 +113,28 @@ export class DeploymentStack extends cdk.Stack {
         );
 
         backendInstance.addUserData(
+            // Install Git
             'sudo yum install -y git',
+            
+            // Install NVM and Node.js
             'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash',
-            `export NVM_DIR="$HOME/.nvm"`,
-            `[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"`,
+            'export NVM_DIR="$HOME/.nvm"',
+            '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"',
             'nvm install --lts',
+            
+            // Clone repo and install dependencies
             'git clone https://github.com/nathan-moore-97/nellys',
             'cd nellys/api && npm install',
-            'npm run start',
+            
+            // Start API (consider using a process manager like PM2 instead of &)
+            'npm run start &',
+            
+            // Install and configure Nginx
+            'sudo yum install -y nginx',
+            'sudo cp nellys/infra/nginx/api.conf /etc/nginx/nginx.conf',
+            'sudo nginx -t', // Test config before starting
+            'sudo systemctl enable nginx', // Enable on boot
+            'sudo systemctl start nginx'
         );
 
         new cdk.CfnOutput(this, "Frontend", {
