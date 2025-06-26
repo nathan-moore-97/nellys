@@ -131,7 +131,7 @@ export class DeploymentStack extends cdk.Stack {
             
             // Install and configure Nginx
             'sudo yum install -y nginx',
-            'sudo cp nellys/infra/nginx/api.conf /etc/nginx/nginx.conf',
+            'sudo cp /nellys/infra/nginx/api.conf /etc/nginx/nginx.conf',
             'sudo nginx -t', // Test config before starting
             'sudo systemctl enable nginx', // Enable on boot
             'sudo systemctl start nginx'
