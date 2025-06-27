@@ -103,7 +103,7 @@ export class DeploymentStack extends cdk.Stack {
             'cd nellys/client/',
             `echo VITE_GMAPS_API_KEY=${process.env.VITE_GMAPS_API_KEY} >> .env`,
             `echo VITE_GMAPS_PLACE_ID=${process.env.VITE_GMAPS_PLACE_ID} >> .env`,
-            `echo VITE_API_URL=http://${backendInstance.instancePublicIp}:3000 >> .env`,
+            `echo VITE_API_URL=http://${backendInstance.instancePublicIp} >> .env`,
             'npm install && npm run build',
             'sudo mkdir -p /var/www/nellys-app',
             'sudo cp -r dist/* /var/www/nellys-app/',
