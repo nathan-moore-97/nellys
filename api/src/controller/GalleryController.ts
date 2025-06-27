@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { GalleryImage } from "../entity/GalleryImage";
 import { AppDataSource } from "../data-source";
+import { LocalStorageService } from "../gallery/ImageStorageService";
 
 interface PhotoListResponse {
     error: string | null;
@@ -16,6 +17,7 @@ interface PhotoResponse {
 export class GalleryController {
     
     private galleryRepository = AppDataSource.getRepository(GalleryImage);
+    private storageService = new LocalStorageService();
 
     async getAllPhotos(request: Request, response: Response, next: NextFunction) {
         const resp: PhotoListResponse = {
@@ -43,7 +45,10 @@ export class GalleryController {
 
         try {
 
-            // Somehow return a photo. No idea how. 
+            // Get Photo with ID 10
+            const photo = this.galleryRepository.findOneBy({ id: 10 });
+            response.send(photo);
+
 
         } catch (error) {
             console.error(error);

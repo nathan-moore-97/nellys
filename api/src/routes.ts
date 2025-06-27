@@ -39,5 +39,11 @@ export const Routes = [
         route: "/gallery",
         controller: GalleryController,
         action: "getAllPhotos"
+    },
+    {
+        method: "get",
+        route: "/gallery/photo",
+        controller: GalleryController,
+        action: "getPhoto"
     }
 ]

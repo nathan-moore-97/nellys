@@ -1,7 +1,7 @@
 import { AppDataSource } from "../data-source"
 import { NextFunction, Request, Response } from "express"
 import { NewsletterSignup } from "../entity/NewsletterSignup";
-import { EmailerService } from "../email/EmailerService";
+import { GmailService } from "../email/EmailerService";
 import { EmailDirector } from "../email/EmailBuilder";
 
 interface SignupResponse {
@@ -11,7 +11,7 @@ interface SignupResponse {
 export class NewsletterSignupController {
 
     private signupRepository = AppDataSource.getRepository(NewsletterSignup);
-    private emailer: EmailerService = new EmailerService();
+    private emailer: GmailService = new GmailService();
 
     async all(request: Request, response: Response, next: NextFunction) {
         return this.signupRepository.find();
