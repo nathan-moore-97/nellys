@@ -3,7 +3,7 @@ import fs from 'fs';
 
 export interface StorageService {
     upload(file: File): Promise<string>;
-    getFromUrl(url: string);
+    getFromUrl(url: string): NonSharedBuffer;
 }
 
 export class LocalStorageService implements StorageService {
@@ -11,7 +11,8 @@ export class LocalStorageService implements StorageService {
         
         throw new Error("Method not implemented.");
     }
-    getFromUrl(url: string) {
+    
+    getFromUrl(url: string): NonSharedBuffer {
         return fs.readFileSync(url);
     }
 

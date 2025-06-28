@@ -23,10 +23,11 @@ AppDataSource.initialize().then(async () => {
     const files = await fs.readdir(path.join(__dirname, '../../photos'));
 
     for (const filename of files) {
+        console.log(`Saving ${filename}`);
         const image = new GalleryImage();
         image.filename = filename;
         image.uploadDate = new Date();
-        image.url = path.join(__dirname, '../../photos');
+        image.url = path.join(__dirname, '../../photos', filename);
 
         repo.save(image);
     }

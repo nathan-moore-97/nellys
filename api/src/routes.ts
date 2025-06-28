@@ -42,7 +42,7 @@ export const Routes = [
     },
     {
         method: "get",
-        route: "/gallery/photo",
+        route: "/gallery/:photoId",
         controller: GalleryController,
         action: "getPhoto"
     }
