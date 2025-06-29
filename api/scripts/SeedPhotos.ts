@@ -5,7 +5,6 @@ import { NewsletterSignup } from "../src/entity/NewsletterSignup";
 import { LocalStorageService } from "../src/gallery/ImageStorageService";
 import  fs  from 'fs/promises';
 import path from 'path';
-import { url } from "inspector";
 
 const AppDataSource = new DataSource({
     type: "sqlite",

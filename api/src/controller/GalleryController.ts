@@ -63,7 +63,6 @@ export class GalleryController {
 
 
             resp.isLastPage = result.length < pageSize;
-            resp.images = result;
             response.json(resp);
 
         } catch (error) {

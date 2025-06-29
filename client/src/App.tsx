@@ -9,6 +9,7 @@ import NavbarView from './components/NavbarView'
 import FooterView from './components/FooterView'
 import { Container } from 'react-bootstrap'
 import UnsubscribePage from './components/pages/UnsubscribePage'
+import GalleryPage from './components/pages/GalleryPage'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/donate" element={<DonatePage />} />
           <Route path="/unsubscribe" element={<UnsubscribePage />} />
+          <Route path="/gallery" element={<GalleryPage/>} />
         </Routes>
       </Container>
       <FooterView />
