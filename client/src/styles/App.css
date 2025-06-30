@@ -2,8 +2,17 @@
   margin: 0 auto;
 }
 
+.page-content {
+  position: relative;
+  margin: 0;
+  height: 100vh;
+  padding-bottom: 6.74rem;
+}
+
 .fixed-footer {
   position: relative;
+  right: 0;
+  left: 0;
   bottom: 0;
   width: 100%;
   background-color: rgb(51, 51, 51);
