@@ -1,4 +1,4 @@
-import UnsubscribeView from "../UnsubscribeView";
+import UnsubscribeView from "../newsletter/UnsubscribeView";
 
 function UnsubscribePage() {
     return (

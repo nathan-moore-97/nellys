@@ -16,7 +16,7 @@ AppDataSource.initialize().then(async () => {
     const app = express();
     const rateLimiter = rateLimit({
         windowMs: 15 * 60 * 1000,
-        max: 15,
+        max: 1500,
     });
 
     const speedLimiter = slowDown({

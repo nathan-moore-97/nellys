@@ -1,5 +1,5 @@
 import { Col, Row } from "react-bootstrap";
-import NewsletterView from "../NewsletterView";
+import NewsletterView from "../newsletter/NewsletterView";
 import GoogleMapsView from "../GoogleMapsView";
 import AddressView from "../AddressView";
 

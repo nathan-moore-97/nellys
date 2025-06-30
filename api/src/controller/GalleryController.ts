@@ -62,7 +62,7 @@ export class GalleryController {
             });
 
 
-            resp.isLastPage = result.length < pageSize;
+            resp.isLastPage = result.length >= pageSize;
             response.json(resp);
 
         } catch (error) {
