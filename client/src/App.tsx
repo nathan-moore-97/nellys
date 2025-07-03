@@ -6,7 +6,7 @@ import ContactPage from './components/pages/ContactPage'
 import DonatePage from './components/pages/DonatePage'
 import CalendarPage from './components/pages/CalendarPage'
 import NavbarView from './components/NavbarView'
-import FooterView from './components/FooterView'
+// import FooterView from './components/FooterView'
 import { Container } from 'react-bootstrap'
 import UnsubscribePage from './components/pages/UnsubscribePage'
 import GalleryPage from './components/pages/GalleryPage'
@@ -25,7 +25,7 @@ function App() {
           <Route path="/gallery" element={<GalleryPage/>} />
         </Routes>
       </Container>
-      <FooterView />
+      {/* <FooterView /> */}
     </Router>
   )
 }

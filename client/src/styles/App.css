@@ -9,6 +9,14 @@
   padding-bottom: 6.74rem;
 }
 
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 15px;
+  grid-auto-rows: 200px;
+  grid-auto-flow: dense;
+}
+
 .fixed-footer {
   position: relative;
   right: 0;
@@ -27,4 +35,43 @@
 
 .navbar {
   text-align: center;
+}
+
+.css-masonry {
+  columns: 4;
+  column-gap: 15px;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 15px;
+}
+
+.masonry-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.masonry-image:hover {
+  transform: scale(1.02);
+}
+
+@media (max-width: 1200px) {
+  .css-masonry {
+    columns: 3;
+  }
+}
+
+@media (max-width: 800px) {
+  .css-masonry {
+    columns: 2;
+  }
+}
+
+@media (max-width: 500px) {
+  .css-masonry {
+    columns: 1;
+  }
 }

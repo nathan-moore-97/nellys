@@ -21,7 +21,7 @@ AppDataSource.initialize().then(async () => {
 
     const speedLimiter = slowDown({
         windowMs: 15 * 60 * 1000,
-        delayAfter: 5,
+        delayAfter: 1500,
         delayMs: () => 2000,
     })
 
