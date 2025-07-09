@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 
 import './styles/App.css'
 import HomePage from './components/pages/HomePage'
@@ -6,10 +6,20 @@ import ContactPage from './components/pages/ContactPage'
 import DonatePage from './components/pages/DonatePage'
 import CalendarPage from './components/pages/CalendarPage'
 import NavbarView from './components/NavbarView'
-// import FooterView from './components/FooterView'
 import { Container } from 'react-bootstrap'
 import UnsubscribePage from './components/pages/UnsubscribePage'
 import GalleryPage from './components/pages/GalleryPage'
+import FooterView from './components/FooterView'
+
+function FooterConditional() {
+  const location = useLocation();
+
+  if (location.pathname === '/gallery') {
+    return null;
+  }
+
+  return <FooterView />
+}
 
 function App() {
   return (
@@ -25,7 +35,7 @@ function App() {
           <Route path="/gallery" element={<GalleryPage/>} />
         </Routes>
       </Container>
-      {/* <FooterView /> */}
+      <FooterConditional />
     </Router>
   )
 }

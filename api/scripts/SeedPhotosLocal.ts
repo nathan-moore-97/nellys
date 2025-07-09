@@ -18,7 +18,6 @@ const AppDataSource = new DataSource({
 
 AppDataSource.initialize().then(async () => {
     const storage = new LocalStorageService();    
-    const repo = AppDataSource.getRepository(GalleryImage);
     const files = await fs.readdir(path.join(__dirname, '../../photos'));
 
     for (const filename of files) {
@@ -28,9 +27,6 @@ AppDataSource.initialize().then(async () => {
         image.uploadDate = new Date();
         image.url = path.join(__dirname, '../../photos', filename);
 
-        repo.save(image);
+        storage.upload(image);
     }
-
-
-    console.log(await repo.find());
 });

@@ -15,8 +15,10 @@ interface PhotoListResponse {
     images: GalleryItem[];
 }
 
+const API_URL = import.meta.env.VITE_API_URL
+
 async function fetchImagePage(pageNumber: number) {
-    const resp = await fetch(`http://localhost:3000/gallery/`, {
+    const resp = await fetch(`${API_URL}/gallery/`, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'
@@ -30,9 +32,6 @@ async function fetchImagePage(pageNumber: number) {
 
 function CarouselView() {
     const [imageItems, setImageItems] = useState<GalleryItem[]>([]);
-    
-    // const [flattenedImageCols, setFlattenedImageCols] = useState<GalleryItem[]>([]);
-    // const [columnCount, setColumnCount] = useState(4);
 
     const [isLoading, setIsLoading ] = useState(false);
     const [showModal, setShowModal] = useState(false);

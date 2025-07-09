@@ -9,7 +9,7 @@ interface ImageComponentProps {
     onClick?: (id: number, event: MouseEvent<HTMLImageElement>) => void;
 }
 
-const API_URL = 'http://localhost:3000'
+const API_URL = import.meta.env.VITE_API_URL
 
 function ImageComponent(props: ImageComponentProps) {
     const handleClick = (event: MouseEvent<HTMLImageElement>) => {

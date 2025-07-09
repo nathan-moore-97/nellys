@@ -7,10 +7,6 @@ import * as route53 from 'aws-cdk-lib/aws-route53';
 
 import * as dotenv from 'dotenv';
 
-dotenv.config({
-    path: '../client/.env',
-});
-
 export class DeploymentStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
@@ -93,6 +89,10 @@ export class DeploymentStack extends cdk.Stack {
 
         // https://stackoverflow.com/questions/54415841/nodejs-not-installed-successfully-in-aws-ec2-inside-user-data
 
+        dotenv.config({
+            path: '../client/.env',
+        });
+
         frontendInstance.addUserData(
             'sudo yum install -y git nginx',
             'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash',
@@ -112,6 +112,10 @@ export class DeploymentStack extends cdk.Stack {
             'sudo systemctl start nginx'
         );
 
+        dotenv.config({
+            path: '../api/.env',
+        });
+
         backendInstance.addUserData(
             'sudo yum install -y git nginx',
             'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash',
@@ -120,6 +124,13 @@ export class DeploymentStack extends cdk.Stack {
             'nvm install --lts',
             'git clone https://github.com/nathan-moore-97/nellys',
             'cd nellys/api && npm install',
+            `echo EMAIL_SERVICE=${process.env.EMAIL_SERVICE} >> .env`,
+            `echo EMAIL_HOST=${process.env.EMAIL_HOST} >> .env`,
+            `echo EMAIL_USERNAME=${process.env.EMAIL_USERNAME} >> .env`,
+            `echo EMAIL_APP_PASSWORD=${process.env.EMAIL_APP_PASSWORD} >> .env`,
+            `echo NEWSLETTER_ADMIN_EMAIL=${process.env.NEWSLETTER_ADMIN_EMAIL} >> .env`,
+            `echo WEB_APP_ROOT_URL=http://nellysdev.org >> .env`,
+            `echo ENVIORNMENT=dev >> .env`,
             'npm run start &',
             'sudo cp /nellys/infra/nginx/api.conf /etc/nginx/nginx.conf',
             'sudo nginx -t', // Test config before starting
