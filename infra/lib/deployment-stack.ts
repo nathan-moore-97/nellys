@@ -71,9 +71,10 @@ export class DeploymentStack extends cdk.Stack {
             }]
         });
 
-        // DNS
-        const hostedZone = route53.HostedZone.fromLookup(this, 'HostedZone', {
-            domainName: 'nellysdev.org',
+        // DNS - Corrected hosted zone creation
+        const hostedZone = new route53.PublicHostedZone(this, 'HostedZone', {
+            zoneName: 'nellysdev.org',
+            comment: 'Hosted zone for nellysdev.org website',
         });
 
         new route53.ARecord(this, 'FrontendARecord', {

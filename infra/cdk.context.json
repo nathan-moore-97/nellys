@@ -6,5 +6,9 @@
     "us-east-1d",
     "us-east-1e",
     "us-east-1f"
-  ]
+  ],
+  "hosted-zone:account=375033338686:domainName=nellysdev.org:region=us-east-1": {
+    "Id": "/hostedzone/Z05691823CIPGY1GVTWQN",
+    "Name": "nellysdev.org."
+  }
 }
