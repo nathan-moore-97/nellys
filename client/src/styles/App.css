@@ -45,6 +45,8 @@
 .masonry-item {
   break-inside: avoid;
   margin-bottom: 15px;
+  display: inline-block; /* This is crucial for column layout */
+  width: 100%;
 }
 
 .masonry-image {
@@ -52,12 +54,14 @@
   height: auto;
   border-radius: 8px;
   transition: transform 0.3s ease;
+  display: block; /* Removes whitespace under images */
 }
 
 .masonry-image:hover {
   transform: scale(1.02);
 }
 
+/* Responsive columns */
 @media (max-width: 1200px) {
   .css-masonry {
     columns: 3;
@@ -74,4 +78,9 @@
   .css-masonry {
     columns: 1;
   }
+}
+
+/* Scroll sentinel - keep this minimal */
+#scroll-sentinel {
+  height: 1px;
 }

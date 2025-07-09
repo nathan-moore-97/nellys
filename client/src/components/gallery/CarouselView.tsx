@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Carousel, Modal, Spinner } from "react-bootstrap";
 import ImageComponent from "./ImageComponent";
 
@@ -21,7 +21,7 @@ async function fetchImagePage(pageNumber: number) {
         headers: {
             'Content-type': 'application/json'
         },
-        body: JSON.stringify({"page": pageNumber, "pageSize": null}),
+        body: JSON.stringify({"page": pageNumber, "pageSize": 25}),
     });
 
     return await resp.json() as PhotoListResponse;
@@ -30,68 +30,85 @@ async function fetchImagePage(pageNumber: number) {
 
 function CarouselView() {
     const [imageItems, setImageItems] = useState<GalleryItem[]>([]);
-    const [flattenedImageCols, setFlattenedImageCols] = useState<GalleryItem[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    
+    // const [flattenedImageCols, setFlattenedImageCols] = useState<GalleryItem[]>([]);
+    // const [columnCount, setColumnCount] = useState(4);
+
+    const [isLoading, setIsLoading ] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [index, setActiveIndex] = useState(0);
-    const [columnCount, setColumnCount] = useState(4);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [isLastPage, setIsLastPage] = useState(false);
+    const isLoadingRef = useRef(isLoading);
+    const isLastPageRef = useRef(isLastPage);
+
+    // Sync refs with state
+    useEffect(() => {
+        isLoadingRef.current = isLoading;
+    }, [isLoading]);
 
     useEffect(() => {
-        const updateColumnCount = () => {
-            const width = window.innerWidth;
-            if (width > 1200) setColumnCount(4);
-            else if (width > 800) setColumnCount(3);
-            else if (width > 500) setColumnCount(2);
-            else setColumnCount(1);
-        }
-
-        updateColumnCount();
-        window.addEventListener('resize', updateColumnCount);
-        return () => window.removeEventListener('resize', updateColumnCount)
-    });
-
+        isLastPageRef.current = isLastPage;
+    }, [isLastPage]);
+    
     useEffect(() => {
-        console.log(`Col count ${columnCount}`);
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && !isLoadingRef.current && !isLastPageRef.current) {
+                    setPageNumber(prev => prev + 1);
+                }
+            },
+            { threshold: 0.1 } // Trigger when 10% visible
+        );
 
-        const columns = Array.from({ length: columnCount }, () => [] as GalleryItem[]);
-        imageItems.forEach((image, index) => {
-            console.log(`${image.id}, ${index % columnCount}`);
-            columns[index % columnCount].push(image);
-        });
+        const sentinel = document.querySelector('#scroll-sentinel');
+        if (sentinel) observer.observe(sentinel);
+
+        return () => observer.disconnect();
+    }, [isLoading, isLastPage]);
+
+    // useEffect(() => {
+    //     const updateColumnCount = () => {
+    //         const width = window.innerWidth;
+    //         if (width > 1200) setColumnCount(4);
+    //         else if (width > 800) setColumnCount(3);
+    //         else if (width > 500) setColumnCount(2);
+    //         else setColumnCount(1);
+    //     }
+
+    //     updateColumnCount();
+    //     window.addEventListener('resize', updateColumnCount);
+    //     return () => window.removeEventListener('resize', updateColumnCount)
+    // }, []);
+
+    // useEffect(() => {
+    //     const columns = Array.from({ length: columnCount }, () => [] as GalleryItem[]);
+    //     imageItems.forEach((image, index) => {
+    //         columns[index % columnCount].push(image);
+    //     });
         
-        setFlattenedImageCols(columns.reduce((acc, val) => acc.concat(val), []));
-        console.log(columns);
-    }, [columnCount]);
+    //     setFlattenedImageCols(columns.reduce((acc, val) => acc.concat(val), []));
+    // }, [columnCount, imageItems]);
 
     useEffect(() => {
-        const fetchAllImages = async() => {
+        const fetchSomeImages = async() => {
             setIsLoading(true);
-            let pageNumber = 0;
-            const allImages: GalleryItem[] = [];
-            let loading = true;
-
-            while(loading) {
-                const listPage = await fetchImagePage(pageNumber);
-                allImages.push(...listPage.images);
-                loading = !listPage.isLastPage;
-                pageNumber++;
-            }
-
-            setImageItems(allImages);
+            console.log("Fetching images from page");
+            const galleryImages = await fetchImagePage(pageNumber);
+            setIsLastPage(galleryImages.isLastPage);
+            setImageItems(prev => prev.concat(galleryImages.images));
+            console.log(`Fetched ${galleryImages.images.length} from page ${pageNumber} IsLastPage=${galleryImages.isLastPage}`);
             setIsLoading(false);
-            console.log("Done");
         };
 
-        fetchAllImages();
-
-    }, []);
+        fetchSomeImages();
+    }, [pageNumber]);
 
     const openModal = (targetImageId?: number) => {
-        console.log(`Opening modal on ${targetImageId}`)
         setShowModal(true);
         if (targetImageId) {
             // Find index of the target image if items are already loaded
-            const targetIndex = imageItems.findIndex(img => img.id === targetImageId);
+            const targetIndex = imageItems.findIndex(img =>  img.id === targetImageId);
             if (targetIndex >= 0) {
                 setActiveIndex(targetIndex);
             }
@@ -108,15 +125,15 @@ function CarouselView() {
 
     return (
         <>
-            <div className="css-masonry">
-                {flattenedImageCols.map((image) => (
+            <div className="css-masonry" id="galleryContainer">
+                {imageItems.map((image) => (
                     <div key={image.id} className="masonry-item">
-                    <ImageComponent 
-                        id={image.id} 
-                        altText={image.filename}
-                        className="masonry-image"
-                        onClick={() => openModal(image.id)}
-                    />
+                        <ImageComponent 
+                            id={image.id} 
+                            altText={image.filename}
+                            className="masonry-image"
+                            onClick={() => openModal(image.id)}
+                        />
                     </div>
                 ))}
             </div>
@@ -148,6 +165,7 @@ function CarouselView() {
                     )}
                 </Modal.Body>
             </Modal>
+            <div id="scroll-sentinel" style={{ height: '1px' }} />
         </>
     );
 }

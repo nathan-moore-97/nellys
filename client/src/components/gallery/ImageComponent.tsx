@@ -24,6 +24,7 @@ function ImageComponent(props: ImageComponentProps) {
                 alt={props.altText}
                 className={`d-block w-100 h-100 object-fit-contain ${props.className || ''}`}
                 onClick={handleClick}
+                loading="lazy"
             />
         </>
     );
