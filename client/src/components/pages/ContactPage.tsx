@@ -10,7 +10,7 @@ function ContactPage() {
             <Row className="mb-4">
                 <Col>
                     <h1 className="mb-3">Contact Us</h1>
-                    <p className="lead">Located in the historical Pope-Leighy house, we do lots of needlework stuff and are happy to chit chat about it!</p>
+                    <p className="lead">Located in the historic Whatever house, we do lots of needlework stuff and are happy to chit-chat about it!</p>
                 </Col>
             </Row>
 

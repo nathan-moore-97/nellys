@@ -39,6 +39,11 @@ function CarouselView() {
     const [index, setActiveIndex] = useState(0);
     const [pageNumber, setPageNumber] = useState(0);
     const [isLastPage, setIsLastPage] = useState(false);
+    const [columnCount, setColumnCount] = useState(4);
+    const [imageCol1, setImageCol1] = useState<GalleryItem[]>([]);
+    const [imageCol2, setImageCol2] = useState<GalleryItem[]>([]);
+    const [imageCol3, setImageCol3] = useState<GalleryItem[]>([]);
+    const [imageCol4, setImageCol4] = useState<GalleryItem[]>([]);
     const isLoadingRef = useRef(isLoading);
     const isLastPageRef = useRef(isLastPage);
 
@@ -67,28 +72,32 @@ function CarouselView() {
         return () => observer.disconnect();
     }, [isLoading, isLastPage]);
 
-    // useEffect(() => {
-    //     const updateColumnCount = () => {
-    //         const width = window.innerWidth;
-    //         if (width > 1200) setColumnCount(4);
-    //         else if (width > 800) setColumnCount(3);
-    //         else if (width > 500) setColumnCount(2);
-    //         else setColumnCount(1);
-    //     }
+    useEffect(() => {
+        const updateColumnCount = () => {
+            const width = window.innerWidth;
+            if (width > 1200) setColumnCount(4);
+            else if (width > 800) setColumnCount(3);
+            else if (width > 500) setColumnCount(2);
+            else setColumnCount(1);
+        }
 
-    //     updateColumnCount();
-    //     window.addEventListener('resize', updateColumnCount);
-    //     return () => window.removeEventListener('resize', updateColumnCount)
-    // }, []);
+        updateColumnCount();
+        window.addEventListener('resize', updateColumnCount);
+        return () => window.removeEventListener('resize', updateColumnCount)
+    }, []);
 
-    // useEffect(() => {
-    //     const columns = Array.from({ length: columnCount }, () => [] as GalleryItem[]);
-    //     imageItems.forEach((image, index) => {
-    //         columns[index % columnCount].push(image);
-    //     });
+    useEffect(() => {
+        const columns = Array.from({ length: 4 }, () => [] as GalleryItem[]);
+        imageItems.forEach((image, index) => {
+            columns[index % columnCount].push(image);
+        });
         
-    //     setFlattenedImageCols(columns.reduce((acc, val) => acc.concat(val), []));
-    // }, [columnCount, imageItems]);
+        setImageCol1(columns[0]);
+        setImageCol2(columns[1]);
+        setImageCol3(columns[2]);
+        setImageCol4(columns[3]);
+
+    }, [columnCount, imageItems]);
 
     useEffect(() => {
         const fetchSomeImages = async() => {
@@ -125,17 +134,55 @@ function CarouselView() {
 
     return (
         <>
-            <div className="css-masonry" id="galleryContainer">
-                {imageItems.map((image) => (
-                    <div key={image.id} className="masonry-item">
-                        <ImageComponent 
-                            id={image.id} 
-                            altText={image.filename}
-                            className="masonry-image"
-                            onClick={() => openModal(image.id)}
-                        />
-                    </div>
-                ))}
+            <div className="image-columns-container" style={{display: "flex"}}>
+                <div className="image-col">
+                    {imageCol1.map((image) => (
+                        <div key={image.id} className="masonry-item">
+                            <ImageComponent 
+                                id={image.id} 
+                                altText={image.filename}
+                                className="masonry-image"
+                                onClick={() => openModal(image.id)}
+                            />
+                        </div>
+                    ))}
+                </div>
+                <div className="image-col">
+                    {imageCol2.map((image) => (
+                        <div key={image.id} className="masonry-item">
+                            <ImageComponent 
+                                id={image.id} 
+                                altText={image.filename}
+                                className="masonry-image"
+                                onClick={() => openModal(image.id)}
+                            />
+                        </div>
+                    ))}
+                </div>
+                <div className="image-col">
+                    {imageCol3.map((image) => (
+                        <div key={image.id} className="masonry-item">
+                            <ImageComponent 
+                                id={image.id} 
+                                altText={image.filename}
+                                className="masonry-image"
+                                onClick={() => openModal(image.id)}
+                            />
+                        </div>
+                    ))}
+                </div>
+                <div className="image-col">
+                    {imageCol4!.map((image) => (
+                        <div key={image.id} className="masonry-item">
+                            <ImageComponent 
+                                id={image.id} 
+                                altText={image.filename}
+                                className="masonry-image"
+                                onClick={() => openModal(image.id)}
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
             {/* Modal with spinner or content */}
             <Modal 

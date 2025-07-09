@@ -37,50 +37,62 @@
   text-align: center;
 }
 
-.css-masonry {
-  columns: 4;
-  column-gap: 15px;
-}
-
-.masonry-item {
-  break-inside: avoid;
-  margin-bottom: 15px;
-  display: inline-block; /* This is crucial for column layout */
+/* Container for all columns */
+.image-columns-container {
+  display: flex;
+  gap: 15px; /* Space between columns */
   width: 100%;
+  padding: 0 15px; /* Horizontal padding for entire gallery */
 }
 
+/* Individual column styling */
+.image-col {
+  flex: 1;
+  min-width: 0; /* Prevents columns from overflowing */
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Space between items in column */
+}
+
+/* Masonry item styling */
+.masonry-item {
+  width: 100%;
+  break-inside: avoid;
+}
+
+/* Image styling */
 .masonry-image {
   width: 100%;
   height: auto;
   border-radius: 8px;
   transition: transform 0.3s ease;
-  display: block; /* Removes whitespace under images */
+  display: block;
 }
 
 .masonry-image:hover {
   transform: scale(1.02);
 }
 
-/* Responsive columns */
+/* Responsive column adjustments */
 @media (max-width: 1200px) {
-  .css-masonry {
-    columns: 3;
+  .image-col:nth-child(4) {
+    display: none; /* Hide 4th column */
   }
 }
 
 @media (max-width: 800px) {
-  .css-masonry {
-    columns: 2;
+  .image-col:nth-child(3) {
+    display: none; /* Hide 3rd column */
   }
 }
 
 @media (max-width: 500px) {
-  .css-masonry {
-    columns: 1;
+  .image-col:nth-child(2) {
+    display: none; /* Hide 2nd column */
   }
 }
 
-/* Scroll sentinel - keep this minimal */
+/* Scroll sentinel */
 #scroll-sentinel {
   height: 1px;
 }
