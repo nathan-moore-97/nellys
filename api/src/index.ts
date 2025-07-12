@@ -14,20 +14,20 @@ AppDataSource.initialize().then(async () => {
     dotenv.config();
 
     const app = express();
-    const rateLimiter = rateLimit({
-        windowMs: 15 * 60 * 1000,
-        max: 1500,
-    });
+    // const rateLimiter = rateLimit({
+    //     windowMs: 15 * 60 * 1000,
+    //     max: 1500,
+    // });
 
-    const speedLimiter = slowDown({
-        windowMs: 15 * 60 * 1000,
-        delayAfter: 1500,
-        delayMs: () => 2000,
-    })
+    // const speedLimiter = slowDown({
+    //     windowMs: 15 * 60 * 1000,
+    //     delayAfter: 1500,
+    //     delayMs: () => 2000,
+    // })
 
     app.use(cors());
-    app.use(rateLimiter);
-    app.use(speedLimiter);
+    // app.use(rateLimiter);
+    // app.use(speedLimiter);
     app.use(bodyParser.json());
 
     // register express routes from defined application routes

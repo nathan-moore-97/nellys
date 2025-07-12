@@ -65,8 +65,15 @@ function CarouselView() {
             { threshold: 0.1 } // Trigger when 10% visible
         );
 
-        const sentinel = document.querySelector('#scroll-sentinel');
-        if (sentinel) observer.observe(sentinel);
+        const sentinel0 = document.querySelector('#scroll-sentinel0');
+        const sentinel1 = document.querySelector('#scroll-sentinel1');
+        const sentinel2 = document.querySelector('#scroll-sentinel2');
+        const sentinel3 = document.querySelector('#scroll-sentinel3');
+        
+        if (sentinel0) observer.observe(sentinel0);
+        if (sentinel1) observer.observe(sentinel1);
+        if (sentinel2) observer.observe(sentinel2);
+        if (sentinel3) observer.observe(sentinel3);
 
         return () => observer.disconnect();
     }, [isLoading, isLastPage]);
@@ -145,6 +152,7 @@ function CarouselView() {
                             />
                         </div>
                     ))}
+                    <div id="scroll-sentinel0" style={{ height: '1px' }} />
                 </div>
                 <div className="image-col">
                     {imageCol2.map((image) => (
@@ -157,6 +165,7 @@ function CarouselView() {
                             />
                         </div>
                     ))}
+                    <div id="scroll-sentinel1" style={{ height: '1px' }} />
                 </div>
                 <div className="image-col">
                     {imageCol3.map((image) => (
@@ -169,9 +178,10 @@ function CarouselView() {
                             />
                         </div>
                     ))}
+                    <div id="scroll-sentinel2" style={{ height: '1px' }} />
                 </div>
                 <div className="image-col">
-                    {imageCol4!.map((image) => (
+                    {imageCol4.map((image) => (
                         <div key={image.id} className="masonry-item">
                             <ImageComponent 
                                 id={image.id} 
@@ -181,6 +191,7 @@ function CarouselView() {
                             />
                         </div>
                     ))}
+                    <div id="scroll-sentinel3" style={{ height: '1px' }} />
                 </div>
             </div>
             {/* Modal with spinner or content */}
@@ -211,7 +222,6 @@ function CarouselView() {
                     )}
                 </Modal.Body>
             </Modal>
-            <div id="scroll-sentinel" style={{ height: '1px' }} />
         </>
     );
 }
