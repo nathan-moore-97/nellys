@@ -1,11 +1,10 @@
 
-
-import CarouselView from "../gallery/CarouselView";
+import GalleryView from "../gallery/GalleryView";
 
 function GalleryPage() {
     return (
         <>
-        <CarouselView />
+        <GalleryView />
         </>
     );
 }

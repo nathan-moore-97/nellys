@@ -2,7 +2,7 @@
 import { DataSource } from "typeorm";
 import { GalleryImage } from "../src/entity/GalleryImage";
 import { NewsletterSignup } from "../src/entity/NewsletterSignup";
-import { LocalStorageService } from "../src/gallery/ImageStorageService";
+
 import  fs  from 'fs/promises';
 import path from 'path';
 
@@ -17,8 +17,8 @@ const AppDataSource = new DataSource({
 });
 
 AppDataSource.initialize().then(async () => {
-    const storage = new LocalStorageService();    
     const files = await fs.readdir(path.join(__dirname, '../../photos'));
+    const repo = AppDataSource.getRepository(GalleryImage);
 
     for (const filename of files) {
         console.log(`Saving ${filename}`);
@@ -26,7 +26,6 @@ AppDataSource.initialize().then(async () => {
         image.filename = filename;
         image.uploadDate = new Date();
         image.url = path.join(__dirname, '../../photos', filename);
-
-        storage.upload(image);
+        repo.save(image);
     }
 });
