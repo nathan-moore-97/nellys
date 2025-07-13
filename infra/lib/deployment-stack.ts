@@ -4,6 +4,7 @@ import { Construct } from 'constructs';
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as route53 from 'aws-cdk-lib/aws-route53';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 
 import * as dotenv from 'dotenv';
 
@@ -66,6 +67,24 @@ export class DeploymentStack extends cdk.Stack {
                 })
             }]
         });
+
+        // Gallery Storage
+        // const galleryBucket = new s3.Bucket(this, 'GalleryBucket', {
+        //     bucketName: `nellysdev-gallery-${this.account}`,
+        //     blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+        //     encryption: s3.BucketEncryption.S3_MANAGED,
+        //     // Delete everything in the gallery and destroy the bucket.
+        //     // This is mainly to keep costs low in development while
+        //     // I am not intending to leave the infrastructure running
+        //     // for any length of time. 
+        //     // autoDeleteObjects: true,
+        //     // removalPolicy: cdk.RemovalPolicy.DESTROY,
+        //     removalPolicy: cdk.RemovalPolicy.RETAIN,
+        // });
+
+        const galleryBucket = s3.Bucket.fromBucketName(this, 'GalleryBucket', `nellysdev-gallery-${this.account}`);
+
+        galleryBucket.grantRead(backendInstance.role!);
 
         // DNS - Corrected hosted zone creation
         const hostedZone = new route53.PublicHostedZone(this, 'HostedZone', {
@@ -133,8 +152,8 @@ export class DeploymentStack extends cdk.Stack {
             `echo ENVIORNMENT=dev >> .env`,
             'npm run start &',
             'sudo cp /nellys/infra/nginx/api.conf /etc/nginx/nginx.conf',
-            'sudo nginx -t', // Test config before starting
-            'sudo systemctl enable nginx', // Enable on boot
+            'sudo nginx -t', 
+            'sudo systemctl enable nginx', 
             'sudo systemctl start nginx'
         );
 
@@ -144,6 +163,10 @@ export class DeploymentStack extends cdk.Stack {
 
         new cdk.CfnOutput(this, "Backend", {
             value: `http://${backendInstance.instancePublicDnsName} (${backendInstance.instancePublicIp})`,
+        });
+
+        new cdk.CfnOutput(this, "Bucket", {
+            value: galleryBucket.bucketName,
         });
     }
 }

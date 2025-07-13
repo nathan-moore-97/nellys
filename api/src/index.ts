@@ -7,6 +7,7 @@ import { Request, Response } from "express";
 import dotenv from "dotenv";
 import { AppDataSource } from "./data-source";
 import { Routes } from "./routes";
+import { StorageServiceFactory } from "./gallery/ImageStorageService";
 
 
 AppDataSource.initialize().then(async () => {
@@ -42,6 +43,9 @@ AppDataSource.initialize().then(async () => {
             }
         })
     });
+    
+    const storageService = StorageServiceFactory.Create();
+    storageService.loadImages();
     
     app.listen(3000);
     console.log("Server started at http://localhost:3000/");

@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { GalleryImage } from "../entity/GalleryImage";
 import { AppDataSource } from "../data-source";
-import { LocalStorageService } from "../gallery/ImageStorageService";
-
+import { StorageServiceFactory } from "../gallery/ImageStorageService";
 
 interface GalleryItem {
     id: number;
@@ -20,7 +19,7 @@ interface PhotoListResponse {
 export class GalleryController {
     
     private galleryRepository = AppDataSource.getRepository(GalleryImage);
-    private storageService = new LocalStorageService();
+    private storageService = StorageServiceFactory.Create();
 
     async getAllPhotos(request: Request, response: Response, next: NextFunction) {
         const resp: PhotoListResponse = {
@@ -83,7 +82,7 @@ export class GalleryController {
 
         try {
             const photo = await this.galleryRepository.findOneBy({ id: photoId });
-
+            
             if (photo == null) {
                 response.json({ "error": "Invalid Photo ID"}).end();
             } else {

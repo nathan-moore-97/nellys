@@ -10,5 +10,8 @@
   "hosted-zone:account=375033338686:domainName=nellysdev.org:region=us-east-1": {
     "Id": "/hostedzone/Z05691823CIPGY1GVTWQN",
     "Name": "nellysdev.org."
-  }
+  },
+  "acknowledged-issue-numbers": [
+    34892
+  ]
 }
