@@ -57,7 +57,7 @@ export class S3StorageService implements StorageService {
     async loadImages() {
         
         const repo = AppDataSource.getRepository(GalleryImage);
-        repo.delete({});
+        repo.clear();
 
         const s3 = new S3Client({ region: "us-east-1" });
         const Bucket = process.env.GALLERY_BUCKET_NAME;
