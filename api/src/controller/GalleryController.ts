@@ -86,7 +86,7 @@ export class GalleryController {
             if (photo == null) {
                 response.json({ "error": "Invalid Photo ID"}).end();
             } else {
-                const photoFile = this.storageService.getFromUrl(photo.url);
+                const photoFile = await this.storageService.getFrom(photo);
                 response.end(Buffer.from(photoFile));
             }
         } catch (error) {

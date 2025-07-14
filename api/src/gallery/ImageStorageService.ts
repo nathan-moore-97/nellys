@@ -2,10 +2,11 @@ import fs from 'fs';
 import { AppDataSource } from "../data-source";
 import { GalleryImage } from "../entity/GalleryImage";
 import path from 'path';
-import { ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
+import { Readable } from 'stream';
 
 export interface StorageService {
-    getFromUrl(url: string): NonSharedBuffer;
+    getFrom(image: GalleryImage): Promise<NonSharedBuffer>;
     loadImages();
 }
 
@@ -48,21 +49,23 @@ export class LocalStorageService implements StorageService {
 
     }
 
-    getFromUrl(url: string): NonSharedBuffer {
-        return fs.readFileSync(url);
+    async getFrom(image: GalleryImage): Promise<NonSharedBuffer> {
+        return await fs.readFileSync(image.url);
     }
 }
 
 export class S3StorageService implements StorageService {
+    
+    s3: S3Client = new S3Client({ region: "us-east-1" });
+    bucketName = process.env.GALLERY_BUCKET_NAME;
+
     async loadImages() {
-        
         const repo = AppDataSource.getRepository(GalleryImage);
         repo.clear();
 
-        const s3 = new S3Client({ region: "us-east-1" });
-        const Bucket = process.env.GALLERY_BUCKET_NAME;
+        const Bucket = this.bucketName;
 
-        const response = await s3.send(
+        const response = await this.s3.send(
             new ListObjectsV2Command({ Bucket })
         );
 
@@ -80,7 +83,26 @@ export class S3StorageService implements StorageService {
         console.log(`Loaded ${response.Contents.length} images`);
     }
 
-    getFromUrl(url: string): NonSharedBuffer {
-        throw new Error('Method not implemented.');
+    async getFrom(image: GalleryImage): Promise<NonSharedBuffer> {
+        const command = new GetObjectCommand({
+            Bucket: this.bucketName,
+            Key: image.filename,
+        });
+
+        const response = await this.s3.send(command);
+        if (!response.Body) {
+            throw new Error(`Empty response from S3`);
+        }
+
+        return await this.streamToBuffer(response.Body as Readable);
+    }
+
+    private async streamToBuffer(stream: Readable): Promise<Buffer> {
+        return new Promise((resolve, reject) => {
+            const chunks: Buffer[] = [];
+            stream.on('data', (chunk) => chunks.push(chunk));
+            stream.on('error', reject);
+            stream.on('end', () => resolve(Buffer.concat(chunks)));
+        });
     }
 }

@@ -148,6 +148,7 @@ export class DeploymentStack extends cdk.Stack {
             `echo EMAIL_USERNAME=${process.env.EMAIL_USERNAME} >> .env`,
             `echo EMAIL_APP_PASSWORD=${process.env.EMAIL_APP_PASSWORD} >> .env`,
             `echo NEWSLETTER_ADMIN_EMAIL=${process.env.NEWSLETTER_ADMIN_EMAIL} >> .env`,
+            `echo GALLERY_BUCKET_NAME=${process.env.GALLERY_BUCKET_NAME} >> .env`,
             `echo WEB_APP_ROOT_URL=http://nellysdev.org >> .env`,
             `echo ENVIORNMENT=dev >> .env`,
             'npm run start &',
