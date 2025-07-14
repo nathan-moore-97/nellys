@@ -9,6 +9,8 @@ import { AppDataSource } from "./data-source";
 import { Routes } from "./routes";
 import { StorageServiceFactory } from "./gallery/ImageStorageService";
 
+import logger from "./logging/Logger";
+
 
 AppDataSource.initialize().then(async () => {
 
@@ -48,6 +50,6 @@ AppDataSource.initialize().then(async () => {
     storageService.loadImages();
     
     app.listen(3000);
-    console.log("Server started at http://localhost:3000/");
+    logger.info("Server started at http://localhost:3000/");
 
-}).catch(error => console.error(error))
+}).catch(error => logger.error(error))

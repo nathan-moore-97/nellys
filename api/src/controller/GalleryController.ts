@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { GalleryImage } from "../entity/GalleryImage";
 import { AppDataSource } from "../data-source";
 import { StorageServiceFactory } from "../gallery/ImageStorageService";
+import logger from "../logging/Logger";
 
 interface GalleryItem {
     id: number;
@@ -65,7 +66,7 @@ export class GalleryController {
             response.json(resp);
 
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             resp.error = "An unexpeceted error occurred. Please try again later";
             response.status(500).json(resp);
         }
@@ -90,7 +91,7 @@ export class GalleryController {
                 response.end(Buffer.from(photoFile));
             }
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             response.status(500).json({error: "An unexpected error occurred when retrieving the photo. Please try again later"});
         }
     }

@@ -4,6 +4,7 @@ import { GalleryImage } from "../entity/GalleryImage";
 import path from 'path';
 import { GetObjectCommand, ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
+import logger from '../logging/Logger';
 
 export interface StorageService {
     getFrom(image: GalleryImage): Promise<NonSharedBuffer>;
@@ -44,7 +45,7 @@ export class LocalStorageService implements StorageService {
                 repo.save(image);
             }
             
-            console.log(`Loaded ${files.length} images`);
+            logger.info(`Loaded ${files.length} images`);
         });
 
     }
@@ -80,7 +81,7 @@ export class S3StorageService implements StorageService {
             repo.save(image);
         }
 
-        console.log(`Loaded ${response.Contents.length} images`);
+        logger.info(`Loaded ${response.Contents.length} images`);
     }
 
     async getFrom(image: GalleryImage): Promise<NonSharedBuffer> {

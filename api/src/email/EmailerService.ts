@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 
 import { smtpConfig } from '../config';
 import { Email } from './EmailBuilder';
+import logger from '../logging/Logger';
 
 interface EmailerService {
     send(dest_addr: string, email: Email): Promise<void>;
@@ -22,9 +23,9 @@ export class GmailService implements EmailerService {
 
         transporter.sendMail(mailOptions, (err, info) => {
             if (err) {
-                console.error(err);
+                logger.error(err);
             } else {
-                console.debug(info.response);
+                logger.debug(info.response);
             }
         });
     }

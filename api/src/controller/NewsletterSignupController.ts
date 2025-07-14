@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express"
 import { NewsletterSignup } from "../entity/NewsletterSignup";
 import { GmailService } from "../email/EmailerService";
 import { EmailDirector } from "../email/EmailBuilder";
+import logger from "../logging/Logger";
 
 interface SignupResponse {
     error: string | null;
@@ -64,7 +65,7 @@ export class NewsletterSignupController {
             
 
         } catch (error) {
-            console.error(error)
+            logger.error(error)
             resp.error = "An unexpected error has occurred. Please try again later.";
             response.status(500).json(resp);
         }
@@ -96,7 +97,7 @@ export class NewsletterSignupController {
             }
             
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             resp.error = "An unexpected error occurred. Please try again later."
             response.status(500).json(resp);
         }
