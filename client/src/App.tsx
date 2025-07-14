@@ -23,20 +23,22 @@ function FooterConditional() {
 
 function App() {
   return (
-    <Router>
-      <NavbarView />
-      <Container className='page-content'>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/donate" element={<DonatePage />} />
-          <Route path="/unsubscribe" element={<UnsubscribePage />} />
-          <Route path="/gallery" element={<GalleryPage/>} />
-        </Routes>
-      </Container>
-      <FooterConditional />
-    </Router>
+    <div className='app-container'>
+      <Router>
+        <NavbarView />
+        <Container className='page-content'>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/donate" element={<DonatePage />} />
+            <Route path="/unsubscribe" element={<UnsubscribePage />} />
+            <Route path="/gallery" element={<GalleryPage/>} />
+          </Routes>
+        </Container>
+        <FooterConditional />
+      </Router>
+    </div>
   )
 }
 

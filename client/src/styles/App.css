@@ -1,12 +1,32 @@
-#root {
-  margin: 0 auto;
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .page-content {
-  position: relative;
-  margin: 0;
-  height: 100vh;
-  padding-bottom: 6.74rem;
+  flex: 1;
+  padding-bottom: 2rem; /* Space above footer */
+  margin-top: 2%;
+}
+
+@media (max-width: 768px) {
+  .page-content {
+    padding-bottom: 3rem;
+  }
+}
+
+.fixed-footer {
+  background-color: rgb(51, 51, 51);
+  color: lightgrey;
+  text-align: center;
+  padding: 1rem 0;
+  width: 100%;
 }
 
 .image-gallery {
@@ -15,22 +35,6 @@
   grid-gap: 15px;
   grid-auto-rows: 200px;
   grid-auto-flow: dense;
-}
-
-.fixed-footer {
-  position: relative;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background-color: rgb(51, 51, 51);
-  color: lightgrey;
-  text-align: center;
-}
-
-.page-content {
-  margin-bottom: 5%;
-  margin-top: 2%;
 }
 
 .navbar {
