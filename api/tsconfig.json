@@ -3,6 +3,7 @@
       "lib": [
          "es2021"
       ],
+      "types": ["jest"],
       "target": "es2021",
       "module": "commonjs",
       "moduleResolution": "node",
