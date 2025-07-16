@@ -4,6 +4,7 @@ import { NewsletterSignup } from "../entity/NewsletterSignup";
 import { GmailService } from "../email/EmailerService";
 import { EmailDirector } from "../email/EmailBuilder";
 import logger from "../logging/Logger";
+import { NewsletterSignupManager } from "../newsletter/NewsletterSignupManager";
 
 interface SignupResponse {
     error: string | null;
@@ -11,11 +12,12 @@ interface SignupResponse {
 
 export class NewsletterSignupController {
 
-    private signupRepository = AppDataSource.getRepository(NewsletterSignup);
     private emailer: GmailService = new GmailService();
+    private manager: NewsletterSignupManager = 
+        new NewsletterSignupManager(AppDataSource.getRepository(NewsletterSignup));
 
     async all(request: Request, response: Response, next: NextFunction) {
-        return this.signupRepository.find();
+        return this.manager.listAllSignups();
     }
 
     async save(request: Request, response: Response, next: NextFunction) {
@@ -25,44 +27,24 @@ export class NewsletterSignupController {
         };
 
         try {
-            let signedUp: boolean = false;
-
-            const { firstName, lastName, email, greeting } = request.body;
             
-            const signup = new NewsletterSignup();
-            signup.firstName = firstName;
-            signup.lastName = lastName;
-            signup.email = email;
-            signup.greeting = greeting;
+            let { email, firstName, lastName, greeting } = request.body;
 
-            let user = await this.signupRepository.findOneBy({ email });
+            const {error, signup} = await this.manager.signupNewUser(firstName,
+                lastName, email, greeting);
+            
+            console.log(signup);
 
-            if (user) {
-                if (user.isActive) {
-                    resp.error = "Email already exists.";
-                } else {
-                    user.isActive = true;
-                    user.cancellationReason = null;
-                    user.greeting = signup.greeting;
-                    user.firstName = signup.firstName;
-                    user.lastName = signup.lastName;
-                    signedUp = true;
-                    await this.signupRepository.save(user);
-                }
-            } else {
-                await this.signupRepository.save(signup);
-                signedUp = true;
-            }
-
-            if (signedUp) {
+            if (!error) {
                 // Send welcome email
-                this.emailer.send(signup.email, EmailDirector.welcome(signup));
+                this.emailer.send(email, EmailDirector.welcome(signup));
                 // Send email to Admin
                 this.emailer.send(process.env.NEWSLETTER_ADMIN_EMAIL, EmailDirector.signUpNotification(signup));
+            } else {
+                resp.error = error;
             }
-
-            response.json(resp);
             
+            response.json(resp);
 
         } catch (error) {
             logger.error(error)
@@ -79,21 +61,15 @@ export class NewsletterSignupController {
 
         try {
             const { email, reason } = request.body;
+            const { error, signup } = await this.manager.removeUser(email, reason);
 
-            let userToRemove = await this.signupRepository.findOneBy({ email });
-
-            if (!userToRemove) {
-                resp.error = "Email does not exist.";
-            } else {
-                userToRemove.isActive = false;
-                userToRemove.cancellationReason = reason;
-
-                await this.signupRepository.save(userToRemove);
-
+            if (!error) {
                 // Send email to admin
-                this.emailer.send(process.env.NEWSLETTER_ADMIN_EMAIL, EmailDirector.unsubscribeNotification(userToRemove));
+                this.emailer.send(process.env.NEWSLETTER_ADMIN_EMAIL, EmailDirector.unsubscribeNotification(signup));
                 // Send user email warning it may take a few days
-                this.emailer.send(userToRemove.email, EmailDirector.goodbye(userToRemove));
+                this.emailer.send(signup.email, EmailDirector.goodbye(signup));
+            } else {
+                resp.error = error;
             }
             
         } catch (error) {

@@ -37,6 +37,7 @@ AppDataSource.initialize().then(async () => {
     Routes.forEach(route => {
         (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
             const result = (new (route.controller as any))[route.action](req, res, next);
+
             if (result instanceof Promise) {
                 result.then(result => result !== null && result !== undefined ? res.send(result) : undefined);
 
@@ -46,8 +47,7 @@ AppDataSource.initialize().then(async () => {
         })
     });
     
-    const storageService = StorageServiceFactory.Create();
-    storageService.loadImages();
+    StorageServiceFactory.Create().loadImages();
     
     app.listen(3000);
     logger.info("Server started at http://localhost:3000/");
