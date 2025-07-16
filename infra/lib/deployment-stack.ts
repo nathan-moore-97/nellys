@@ -12,6 +12,8 @@ export class DeploymentStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
+        const createBucket = this.node.tryGetContext('createBucket') || false;
+
         // VPC
         const vpc = new ec2.Vpc(this, 'NellysDevVPC', {
             maxAzs: 1,
@@ -68,21 +70,24 @@ export class DeploymentStack extends cdk.Stack {
             }]
         });
 
-        // Gallery Storage
-        // const galleryBucket = new s3.Bucket(this, 'GalleryBucket', {
-        //     bucketName: `nellysdev-gallery-${this.account}`,
-        //     blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-        //     encryption: s3.BucketEncryption.S3_MANAGED,
-        //     // Delete everything in the gallery and destroy the bucket.
-        //     // This is mainly to keep costs low in development while
-        //     // I am not intending to leave the infrastructure running
-        //     // for any length of time. 
-        //     // autoDeleteObjects: true,
-        //     // removalPolicy: cdk.RemovalPolicy.DESTROY,
-        //     removalPolicy: cdk.RemovalPolicy.RETAIN,
-        // });
+        let galleryBucket;
 
-        const galleryBucket = s3.Bucket.fromBucketName(this, 'GalleryBucket', `nellysdev-gallery-${this.account}`);
+        if (createBucket) {
+            galleryBucket = new s3.Bucket(this, 'GalleryBucket', {
+                bucketName: `nellysdev-gallery-${this.account}`,
+                blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+                encryption: s3.BucketEncryption.S3_MANAGED,
+                // Delete everything in the gallery and destroy the bucket.
+                // This is mainly to keep costs low in development while
+                // I am not intending to leave the infrastructure running
+                // for any length of time. 
+                // autoDeleteObjects: true,
+                // removalPolicy: cdk.RemovalPolicy.DESTROY,
+                removalPolicy: cdk.RemovalPolicy.RETAIN,
+            });
+        } else {
+            galleryBucket = s3.Bucket.fromBucketName(this, 'GalleryBucket', `nellysdev-gallery-${this.account}`);
+        }
 
         galleryBucket.grantRead(backendInstance.role!);
 
