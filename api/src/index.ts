@@ -10,6 +10,7 @@ import { Routes } from "./routes";
 import { StorageServiceFactory } from "./gallery/ImageStorageService";
 
 import logger from "./logging/Logger";
+import { authenticateJWT } from "./middleware/JWTAuthenticatorMiddleware";
 
 
 AppDataSource.initialize().then(async () => {
@@ -17,25 +18,35 @@ AppDataSource.initialize().then(async () => {
     dotenv.config();
 
     const app = express();
-    // const rateLimiter = rateLimit({
-    //     windowMs: 15 * 60 * 1000,
-    //     max: 1500,
-    // });
+    const rateLimiter = rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 10,
+    });
 
-    // const speedLimiter = slowDown({
-    //     windowMs: 15 * 60 * 1000,
-    //     delayAfter: 1500,
-    //     delayMs: () => 2000,
-    // })
+    const speedLimiter = slowDown({
+        windowMs: 15 * 60 * 1000,
+        delayAfter: 5,
+        delayMs: () => 2000,
+    });
 
     app.use(cors());
-    // app.use(rateLimiter);
-    // app.use(speedLimiter);
+    
     app.use(bodyParser.json());
 
     // register express routes from defined application routes
     Routes.forEach(route => {
-        (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
+
+        const middlewares = [];
+
+        if (route.protected) {
+            middlewares.push(rateLimiter, speedLimiter);
+        }
+
+        if (route.authenticated) {
+            middlewares.push(authenticateJWT);
+        }
+
+        (app as any)[route.method](route.route, ...middlewares, (req: Request, res: Response, next: Function) => {
             const result = (new (route.controller as any))[route.action](req, res, next);
 
             if (result instanceof Promise) {
