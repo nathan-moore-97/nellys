@@ -7,10 +7,13 @@ import logger from "../logging/Logger";
 const authService = new AuthenticationService(AppDataSource.getRepository(AdminUser));
 
 export const authenticateJWT = async (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
+    let token: string;
 
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
+    if (req.signedCookies) {
+        token = req.cookies.token;
+    }
+
+    if (token) {
         const user = await authService.verify(token);
 
         if (!user) {

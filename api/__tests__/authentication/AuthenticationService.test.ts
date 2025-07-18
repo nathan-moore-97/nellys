@@ -86,7 +86,7 @@ describe('AuthenticationService', () => {
         const user = await authService.register(username, password);
         mockedRepo.findOneBy.mockResolvedValue(user);
 
-        const token = await authService.authenticate(username, password);
+        const {token} = await authService.authenticate(username, password);
 
         expect(isLikelyJWT(token)).toBeTruthy();
     });

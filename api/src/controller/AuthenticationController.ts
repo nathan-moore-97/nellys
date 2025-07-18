@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { AdminUser } from "../entity/AdminUser";
 import { AuthenticationService } from "../core/auth/AuthenticationService";
+import { strict } from "assert";
+import logger from "../logging/Logger";
 
 export class AuthenticationController {
     private authService: AuthenticationService =
@@ -53,13 +55,31 @@ export class AuthenticationController {
             return;
         }
 
-        const token = await this.authService.authenticate(username, password);
+        const {token, user} = await this.authService.authenticate(username, password);
 
         if (!token) {
             response.status(401).json({ error: "Invalid credentials"});
             return;
         }
 
-        response.status(202).json({token});
+        response.cookie('token', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+            maxAge: 15 * 60 * 1000,
+            path: '/'
+        });
+
+        const refreshToken = this.authService.refresh(user);
+
+        response.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            path: '/auth/refresh', // Only sent to refresh endpoint
+        });
+
+        response.status(202).end();
     }
 }

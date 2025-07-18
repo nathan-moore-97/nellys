@@ -8,10 +8,9 @@ import dotenv from "dotenv";
 import { AppDataSource } from "./data-source";
 import { Routes } from "./routes";
 import { StorageServiceFactory } from "./gallery/ImageStorageService";
-
+import cookieParser from "cookie-parser";
 import logger from "./logging/Logger";
 import { authenticateJWT } from "./middleware/JWTAuthenticatorMiddleware";
-
 
 AppDataSource.initialize().then(async () => {
 
@@ -31,6 +30,8 @@ AppDataSource.initialize().then(async () => {
 
     app.use(cors());
     
+    app.use(cookieParser());
+
     app.use(bodyParser.json());
 
     // register express routes from defined application routes
