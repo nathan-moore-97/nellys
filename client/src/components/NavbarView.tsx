@@ -22,6 +22,8 @@ function NavbarView() {
                         <Nav.Link onClick={() => {setExpanded(false)}} as={Link} to="/donate">Donate</Nav.Link>
                         <Nav.Link onClick={() => {setExpanded(false)}} as={Link} to="/gallery">Gallery</Nav.Link>
                         <Nav.Link onClick={() => {setExpanded(false)}} as={Link} to="/contact">Contact</Nav.Link>
+                        <Nav.Link onClick={() => {setExpanded(false)}} as={Link} to="/login">Login</Nav.Link>
+                        <Nav.Link onClick={() => {setExpanded(false)}} as={Link} to="/signups">Signups</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

@@ -57,7 +57,7 @@ export class AuthenticationService {
                 return null;
             }
 
-            username = (user as TokenPayload).username;
+            username = user;
         });
 
         return username;

@@ -10,36 +10,40 @@ import { Container } from 'react-bootstrap'
 import UnsubscribePage from './components/pages/UnsubscribePage'
 import GalleryPage from './components/pages/GalleryPage'
 import FooterView from './components/FooterView'
+import SignupListPage from './components/pages/SignupListPage'
+import LoginPage from './components/pages/LoginPage'
 
 function FooterConditional() {
-  const location = useLocation();
+    const location = useLocation();
 
-  if (location.pathname === '/gallery') {
-    return null;
-  }
+    if (location.pathname === '/gallery') {
+        return null;
+    }
 
-  return <FooterView />
+    return <FooterView />
 }
 
 function App() {
-  return (
-    <div className='app-container'>
-      <Router>
-        <NavbarView />
-        <Container className='page-content'>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/donate" element={<DonatePage />} />
-            <Route path="/unsubscribe" element={<UnsubscribePage />} />
-            <Route path="/gallery" element={<GalleryPage/>} />
-          </Routes>
-        </Container>
-        <FooterConditional />
-      </Router>
-    </div>
-  )
+    return (
+        <div className='app-container'>
+            <Router>
+                <NavbarView />
+                <Container className='page-content'>
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/calendar" element={<CalendarPage />} />
+                        <Route path="/donate" element={<DonatePage />} />
+                        <Route path="/unsubscribe" element={<UnsubscribePage />} />
+                        <Route path="/gallery" element={<GalleryPage />} />
+                        <Route path="/signups" element={<SignupListPage />} />
+                        <Route path="/login" element={<LoginPage />} />
+                    </Routes>
+                </Container>
+                <FooterConditional />
+            </Router>
+        </div>
+    )
 }
 
 export default App;
