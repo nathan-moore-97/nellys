@@ -39,11 +39,11 @@ AppDataSource.initialize().then(async () => {
 
         const middlewares = [];
 
-        if (route.protected) {
+        if (route.rateLimited) {
             middlewares.push(rateLimiter, speedLimiter);
         }
 
-        if (route.authenticated) {
+        if (route.protected) {
             middlewares.push(authenticateJWT);
         }
 

@@ -11,7 +11,8 @@ export const Routes = [
         route: "/health",
         controller: ApiHealthController,
         action: "all",
-        protected: true,
+        rateLimited: true,
+        protected: false,
     },
 
     // Authentication
@@ -20,14 +21,16 @@ export const Routes = [
         route: "/auth/register",
         controller: AuthenticationController,
         action: "register",
-        protected: true,
+        rateLimited: true,
+        protected: false,
     }, 
     {
         method: "post", 
         route: "/auth",
         controller: AuthenticationController,
         action: "authenticate", 
-        protected: true,
+        rateLimited: true,
+        protected: false,
     },
 
     // Newsletter Signup Routes
@@ -36,6 +39,7 @@ export const Routes = [
         route: "/newsletter",
         controller: NewsletterSignupController,
         action: "save",
+        rateLimited: false,
         protected: false,
     }, 
     {
@@ -43,16 +47,16 @@ export const Routes = [
         route: "/newsletter",
         controller: NewsletterSignupController,
         action: "remove",
+        rateLimited: false,
         protected: false,
     },
     {
-        // TODO: secure this endpoint behind some kind of authentication
         method: "get",
         route: "/newsletter",
         controller: NewsletterSignupController,
         action: "all",
+        rateLimited: false, 
         protected: false,
-        authenticated: true,
     },
 
     // Gallery
@@ -61,6 +65,7 @@ export const Routes = [
         route: "/gallery",
         controller: GalleryController,
         action: "getAllPhotos",
+        rateLimited: false,
         protected: false,
     },
     {
@@ -68,6 +73,7 @@ export const Routes = [
         route: "/gallery/:photoId",
         controller: GalleryController,
         action: "getPhoto",
+        rateLimited: false,
         protected: false,
     }
 ]
