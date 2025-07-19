@@ -17,7 +17,7 @@ export class NewsletterSignupController {
         new NewsletterSignupManager(AppDataSource.getRepository(NewsletterSignup));
 
     async all(request: Request, response: Response, next: NextFunction) {
-        logger.info(`${(request as any).user} -> NewsletterSignupController.all`); 
+        logger.info(`${(request as any).user.username} -> NewsletterSignupController.all`); 
         return this.manager.listAllSignups();
     }
 

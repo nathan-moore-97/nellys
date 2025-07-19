@@ -4,6 +4,7 @@ import { AdminUser } from "../entity/AdminUser";
 import { AuthenticationService } from "../core/auth/AuthenticationService";
 import { strict } from "assert";
 import logger from "../logging/Logger";
+import { error } from "console";
 
 export class AuthenticationController {
     private authService: AuthenticationService =
@@ -55,22 +56,12 @@ export class AuthenticationController {
             return;
         }
 
-        const {token, user} = await this.authService.authenticate(username, password);
+        const {accessToken, refreshToken, user} = await this.authService.authenticate(username, password);
 
-        if (!token) {
+        if (!accessToken) {
             response.status(401).json({ error: "Invalid credentials"});
             return;
         }
-
-        response.cookie('token', token, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "strict",
-            maxAge: 15 * 60 * 1000,
-            path: '/'
-        });
-
-        const refreshToken = this.authService.refresh(user);
 
         response.cookie('refreshToken', refreshToken, {
             httpOnly: true,
@@ -80,6 +71,22 @@ export class AuthenticationController {
             path: '/auth/refresh', // Only sent to refresh endpoint
         });
 
-        response.status(202).end();
+        response.status(202).json({accessToken: accessToken});
+    }
+
+    async refreshToken(request: Request, response: Response, next: NextFunction) {
+        const refreshToken = request.cookies?.refreshToken;
+
+        if (!refreshToken) {
+            return response.status(401).json({error: "Refresh token required"});
+        }
+
+        const token = await this.authService.refresh(refreshToken);
+
+        if (!token) {
+            return response.status(401).json({error: 'Invalid refresh token'});
+        }
+
+        response.status(202).json({accessToken: token});
     }
 }

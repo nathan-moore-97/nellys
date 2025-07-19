@@ -32,6 +32,14 @@ export const Routes = [
         rateLimited: true,
         protected: false,
     },
+    {
+        method: "post", 
+        route: "/auth/refresh",
+        controller: AuthenticationController,
+        action: "refreshToken", 
+        rateLimited: true,
+        protected: false,
+    },
 
     // Newsletter Signup Routes
     {
@@ -56,7 +64,7 @@ export const Routes = [
         controller: NewsletterSignupController,
         action: "all",
         rateLimited: false, 
-        protected: false,
+        protected: true,
     },
 
     // Gallery

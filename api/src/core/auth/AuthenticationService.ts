@@ -5,7 +5,8 @@ import logger from "../../logging/Logger";
 
 export const JWT_SECRET = process.env.JWT_SECRET || "secret";
 export const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "refresh-secret";
-const JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME || '1h';
+const ACCESS_TOKEN_EXPIRATION = process.env.ACCESS_TOKEN_EXPIRATION || '15m';
+const REFRESH_TOKEN_EXPIRATION = process.env.REFRESH_TOKEN_EXPIRATION || '7d';
 
 interface TokenPayload {
     userId: number;
@@ -13,7 +14,8 @@ interface TokenPayload {
 }
 
 interface AuthenticatedUser {
-    token: string;
+    accessToken: string;
+    refreshToken: string;
     user: AdminUser;
 }
 
@@ -42,32 +44,43 @@ export class AuthenticationService {
         const token = jwt.sign(
             { userId: user.id, username: user.username } as TokenPayload,
             JWT_SECRET,
-            { expiresIn: JWT_EXPIRATION_TIME } as SignOptions
+            { expiresIn: ACCESS_TOKEN_EXPIRATION } as SignOptions
+        );
+
+        const refresh = jwt.sign(
+            { userId: user.id, username: user.username } as TokenPayload,
+            JWT_REFRESH_SECRET,
+            { expiresIn: REFRESH_TOKEN_EXPIRATION } as SignOptions
         );
         
-        return {token: token, user: user} as AuthenticatedUser;
+        return {accessToken: token, refreshToken: refresh, user: user} as AuthenticatedUser;
     }
 
-    async verify(token: string): Promise<string> {
+    async verify(token: string): Promise<TokenPayload> {
         let username: string;
 
-        jwt.verify(token, JWT_SECRET, (err: any, user: any) =>  {
-            if (err) {
-                logger.warn(err.message);
+        return jwt.verify(token, JWT_SECRET) as TokenPayload;
+    }
+
+    async refresh(refreshToken: string): Promise<string | null> {
+        try {
+            const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as TokenPayload;
+            const user = await this.repo.findOneBy({id: payload.userId});
+
+            if (!user) {
                 return null;
             }
 
-            username = user;
-        });
+            const token = jwt.sign(
+                { userId: user.id, username: user.username } as TokenPayload,
+                JWT_SECRET,
+                { expiresIn: ACCESS_TOKEN_EXPIRATION } as SignOptions
+            );
 
-        return username;
-    }
-
-    async refresh(user: AdminUser): Promise<string> {
-        return jwt.sign(
-            { userId: user.id, username: user.username } as TokenPayload,
-            JWT_REFRESH_SECRET,
-            { expiresIn: JWT_EXPIRATION_TIME } as SignOptions
-        )
+            return token;
+        } catch (error) {
+            logger.warn('Refresh token verifcation failed:', error);
+            return null;
+        }
     }
 }
