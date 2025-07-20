@@ -46,6 +46,7 @@ app.use(cookieParser());
             middlewares.push(rateLimiter, speedLimiter);
         }
 
+        // Must have a valid short lived token
         if (route.protected) {
             middlewares.push(authenticateJWT);
         }

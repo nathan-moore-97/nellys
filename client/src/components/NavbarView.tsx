@@ -2,9 +2,9 @@ import { useState, type MouseEvent } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, type AuthContextType } from '../auth/AuthProvider';
-import { NavDropdown } from 'react-bootstrap';
+import { Button, NavDropdown } from 'react-bootstrap';
 
 interface AuthenticatedNavProps {
     path: string
@@ -15,7 +15,11 @@ interface AuthenticatedNavProps {
 interface AuthenticatedDropdownProps {
     children?: React.ReactNode;
     title: string;
-    
+}
+
+interface AuthenticatedButtonProps {
+    children?: React.ReactNode;
+    onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
 function AuthenticatedDropdown (props: AuthenticatedDropdownProps) {
@@ -27,6 +31,14 @@ function AuthenticatedDropdown (props: AuthenticatedDropdownProps) {
     return <NavDropdown menuVariant='dark' title={props.title}>{props.children}</NavDropdown>
 }
 
+function AuthenticatedButton (props: AuthenticatedButtonProps) {
+    const { isAuthenticated } = useAuth() as AuthContextType;
+    if (!isAuthenticated) {
+        return null;
+    }
+
+    return <Button onClick={props.onClick}>{props.children}</Button>
+}
 
 function AuthenticatedNav (props: AuthenticatedNavProps)  {
     const { isAuthenticated } = useAuth() as AuthContextType;
@@ -40,6 +52,14 @@ function AuthenticatedNav (props: AuthenticatedNavProps)  {
 
 function NavbarView() {
     const [expanded, setExpanded] = useState(false);
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        console.log("Logout click")
+        await logout();
+        navigate("/");
+    }
 
     return (
         <Navbar expanded={expanded} bg="primary" variant="dark" expand="sm" className="mb-4">
@@ -58,6 +78,7 @@ function NavbarView() {
                         <AuthenticatedDropdown title='Admin'>
                             <AuthenticatedNav onClick={() => {setExpanded(false)}} path='/signups'>Signups</AuthenticatedNav>
                         </AuthenticatedDropdown>
+                        <AuthenticatedButton onClick={handleLogout}>Logout</AuthenticatedButton>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

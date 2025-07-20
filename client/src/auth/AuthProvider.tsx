@@ -1,89 +1,124 @@
-import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, } from 'react';
 
 export interface AuthContextType {
-    token: string | null;
     isAuthenticated: boolean;
+    isLoading: boolean;
     login: (username: string, password: string) => Promise<boolean>;
     logout: () => void;
 }
 
-export interface AuthTokenResponse {
-    accessToken: string;
-    // Add other fields if your API returns more data
+interface AuthProviderProps {
+    children: React.ReactNode;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
-    const [token, setToken] = useState<string | null>(null);
+export function AuthProvider(props: AuthProviderProps) {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loading, setIsLoading] = useState(true);
 
-const refreshToken = async(): Promise<boolean> => {
-    const response = await fetch(`${API_URL}/auth/refresh`, {
-        method: 'POST',
-        credentials: 'include', 
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    const refreshToken = async(): Promise<boolean> => {
+        try {
+            const response = await fetch(`${API_URL}/auth/refresh`, {
+                method: 'POST',
+                credentials: 'include',
+            });
 
-    const data = await response.json() as AuthTokenResponse;
+            if (!response.ok) return false;
 
-    if (data.accessToken) {
-        setToken(data.accessToken);
-        return true;
-    } 
-    
-    return false;
-}
+            setIsAuthenticated(true);
+            return true;
+        } catch (error) {
+            console.error('Refresh error: ', error);
+            return false;
+        }
+    }
 
     const loginUser = async (username: string, password: string): Promise<boolean> => {
-        const response = await fetch(`${API_URL}/auth`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify({username, password})
-        });
+        try {
+            const response = await fetch(`${API_URL}/auth`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({username, password}),
+            });
 
-        const data = await response.json() as AuthTokenResponse;
+            if (!response.ok) return false;
 
-        if (data.accessToken) {
-            setToken(data.accessToken);
+            setIsAuthenticated(true);
             return true;
-        } 
-
-        return false;
+        } catch (error) {
+            console.error('Login error: ', error);
+            return false;
+        }
     }
 
     const logoutUser = async () => {
-        await fetch(`${API_URL}/auth`, {
-            method: 'POST',
-            credentials: 'include'
-        });
-
-        setToken(null);
+        try {
+            await fetch(`${API_URL}/auth/logout`, {
+                method: 'POST',
+                credentials: 'include',
+            });
+            console.log("Logout fired");
+        } catch (error) {
+            console.error('Logout error: ', error);
+        } finally {
+            setIsAuthenticated(false);
+        }
     }
 
     useEffect(() => {
-        refreshToken();
+        const initializeAuth = async () => {
+            try {
+                if (!(await refreshToken())) {
+                    await logoutUser();
+                }
+            } catch (error) {
+                console.error('Auth initialization error: ', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        initializeAuth();
     }, []);
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+
+        const refreshInterval = setInterval(async () => {
+            await refreshToken();
+        }, 14 * 60 * 1000);
+
+        return () => clearInterval(refreshInterval);
+
+    }, [isAuthenticated]);
 
 
     const value = {
-        token: token,
-        isAuthenticated: !!token,
+        isAuthenticated: isAuthenticated,
+        isLoading: loading,
         login: loginUser,
         logout: logoutUser,
     } as AuthContextType;
 
     return (
         <AuthContext.Provider value={value}>
-            {children}
+            {props.children}
         </AuthContext.Provider>
     );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+
+    return context;
+}

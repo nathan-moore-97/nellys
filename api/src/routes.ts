@@ -5,7 +5,7 @@ import { AuthenticationController } from "./controller/AuthenticationController"
 
 export const Routes = [
     
-    // Health endpoint
+    // Health
     {
         method: "get",
         route: "/health",
@@ -13,10 +13,17 @@ export const Routes = [
         action: "all",
         rateLimited: true,
         protected: false,
-        requiresCredentials: false,
     },
 
     // Authentication
+    {
+        method: "get",
+        route: "/auth/verify",
+        controller: AuthenticationController,
+        action: "verify",
+        rateLimited: false,
+        protected: true,
+    },
     {
         method: "post",
         route: "/auth/register",
@@ -24,7 +31,6 @@ export const Routes = [
         action: "register",
         rateLimited: true,
         protected: false,
-        requiresCredentials: false,
     }, 
     {
         method: "post", 
@@ -33,7 +39,14 @@ export const Routes = [
         action: "authenticate", 
         rateLimited: true,
         protected: false,
-        requiresCredentials: false,
+    },
+    {
+        method: "post",
+        route: "/auth/logout",
+        controller: AuthenticationController,
+        action: "clear",
+        rateLimited: true,
+        protected: true,
     },
     {
         method: "post", 
@@ -42,10 +55,9 @@ export const Routes = [
         action: "refreshToken", 
         rateLimited: true,
         protected: false,
-        requiresCredentials: true,
     },
 
-    // Newsletter Signup Routes
+    // Newsletter Signups
     {
         method: "post",
         route: "/newsletter",
@@ -53,7 +65,6 @@ export const Routes = [
         action: "save",
         rateLimited: false,
         protected: false,
-        requiresCredentials: false,
     }, 
     {
         method: "delete",
@@ -62,7 +73,6 @@ export const Routes = [
         action: "remove",
         rateLimited: false,
         protected: false,
-        requiresCredentials: false,
     },
     {
         method: "get",
@@ -81,7 +91,6 @@ export const Routes = [
         action: "getAllPhotos",
         rateLimited: false,
         protected: false,
-        requiresCredentials: false,
     },
     {
         method: "get",
@@ -90,6 +99,5 @@ export const Routes = [
         action: "getPhoto",
         rateLimited: false,
         protected: false,
-        requiresCredentials: false,
     }
 ]

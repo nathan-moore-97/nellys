@@ -17,12 +17,12 @@ interface NewsletterSignupEntry {
 const API_URL = import.meta.env.VITE_API_URL;
 
 
-async function getAllSignups(token: string): Promise<NewsletterSignupEntry[]> {
+async function getAllSignups(): Promise<NewsletterSignupEntry[]> {
     const response = await fetch(`${API_URL}/newsletter`, {
         method: 'GET',
+        credentials: 'include',
         headers: {
             'Content-type': 'application/json',
-            'Authorization': `Bearer ${token}`
         },
     });
 
@@ -34,12 +34,12 @@ function SignupListPage() {
     const [signups, setSignups] = useState<NewsletterSignupEntry[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const { isAuthenticated, token } = useAuth() as AuthContextType;
+    const { isAuthenticated } = useAuth() as AuthContextType;
 
     const fetchDataSource = async () => {
-        if (token) {
+        if (isAuthenticated) {
             try {
-                setSignups(await getAllSignups(token));
+                setSignups(await getAllSignups());
             } catch (err) {
                 if (err instanceof Error) {
                     setError(err.message);
@@ -65,10 +65,8 @@ function SignupListPage() {
     if (loading) {
         return (
             <Container className="text-center mt5">
-                <Spinner animation="border" role="status">
-                    <span className="visuall-hidden">Loading...</span>
-                </Spinner>
-                <p>Loading newsletter signups...</p>
+                <Spinner animation="border" role="status" />
+                <span className="visuall-hidden">Loading...</span>
             </Container>
         );
     }
