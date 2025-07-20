@@ -94,7 +94,7 @@ function UnsubscribePage() {
 
     return(
         <>
-            <h3>Unsubscribe from the Newsletter</h3>
+            <h2>Unsubscribe from the Newsletter</h2>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Email Address</Form.Label>

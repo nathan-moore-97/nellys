@@ -45,48 +45,49 @@ export class AuthenticationController {
         }
     }
 
-    async authenticate(request: Request, response: Response, next: NextFunction) {
-        const { username, password } = request.body;
+async authenticate(request: Request, response: Response, next: NextFunction) {
+    const { username, password } = request.body;
 
-        if (!username || !password) {
-            response.status(400).json({ 
-                error: 'Username and password are required' 
-            });
-
-            return;
-        }
-
-        const {accessToken, refreshToken, user} = await this.authService.authenticate(username, password);
-
-        if (!accessToken) {
-            response.status(401).json({ error: "Invalid credentials"});
-            return;
-        }
-
-        response.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-            path: '/auth/refresh', // Only sent to refresh endpoint
+    if (!username || !password) {
+        response.status(400).json({ 
+            error: 'Username and password are required' 
         });
 
-        response.status(202).json({accessToken: accessToken});
+        return;
     }
 
-    async refreshToken(request: Request, response: Response, next: NextFunction) {
-        const refreshToken = request.cookies?.refreshToken;
+    const {accessToken, refreshToken, user} = await this.authService.authenticate(username, password);
 
-        if (!refreshToken) {
-            return response.status(401).json({error: "Refresh token required"});
-        }
-
-        const token = await this.authService.refresh(refreshToken);
-
-        if (!token) {
-            return response.status(401).json({error: 'Invalid refresh token'});
-        }
-
-        response.status(202).json({accessToken: token});
+    if (!accessToken) {
+        response.status(401).json({ error: "Invalid credentials"});
+        return;
     }
+
+    response.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    response.status(202).json({accessToken: accessToken});
+}
+
+async refreshToken(request: Request, response: Response, next: NextFunction) {
+    const refreshToken = request.cookies?.refreshToken;
+
+    if (!refreshToken) {
+        response.status(401).json({error: "Refresh token required"});
+        return;
+    }
+
+    const token = await this.authService.refresh(refreshToken);
+
+    if (!token) {
+        response.status(401).json({error: 'Invalid refresh token'});
+        return;
+    }
+
+    response.status(202).json({accessToken: token});
+}
 }

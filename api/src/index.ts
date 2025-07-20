@@ -28,9 +28,12 @@ AppDataSource.initialize().then(async () => {
         delayMs: () => 2000,
     });
 
-    app.use(cors());
-    
-    app.use(cookieParser());
+app.use(cors({
+    origin: process.env.WEB_APP_ROOT_URL, 
+    credentials: true, 
+}));
+
+app.use(cookieParser());
 
     app.use(bodyParser.json());
 

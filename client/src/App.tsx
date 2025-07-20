@@ -11,6 +11,8 @@ import SignupListPage from './components/pages/SignupListPage'
 import LoginPage from './components/pages/LoginPage'
 import GalleryPage from './components/pages/GalleryPage'
 import UnsubscribePage from './components/pages/UnsubscribePage'
+import { AuthProvider } from './auth/AuthProvider'
+import { ProtectedRoute } from './auth/ProtectedRoute'
 
 function FooterConditional() {
     const location = useLocation();
@@ -24,23 +26,31 @@ function FooterConditional() {
 
 function App() {
     return (
-        <div className='app-container'>
-            <Router>
-                <NavbarView />
-                <Container className='page-content'>
-                    <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/contact" element={<ContactPage />} />
-                        <Route path="/calendar" element={<CalendarPage />} />
-                        <Route path="/unsubscribe" element={<UnsubscribePage />} />
-                        <Route path="/gallery" element={<GalleryPage />} />
-                        <Route path="/signups" element={<SignupListPage />} />
-                        <Route path="/login" element={<LoginPage />} />
-                    </Routes>
-                </Container>
-                <FooterConditional />
-            </Router>
-        </div>
+        <AuthProvider>
+            <div className='app-container'>
+                <Router>
+                    <NavbarView />
+                    <Container className='page-content'>
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/contact" element={<ContactPage />} />
+                            <Route path="/calendar" element={<CalendarPage />} />
+                            <Route path="/unsubscribe" element={<UnsubscribePage />} />
+                            <Route path="/gallery" element={<GalleryPage />} />
+                            
+                            <Route path="/signups" element={
+                                <ProtectedRoute>
+                                    <SignupListPage />
+                                </ProtectedRoute>
+                            } />
+                            
+                            <Route path="/login" element={<LoginPage />} />
+                        </Routes>
+                    </Container>
+                    <FooterConditional />
+                </Router>
+            </div>
+        </AuthProvider>
     )
 }
 

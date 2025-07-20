@@ -25,9 +25,9 @@ html, body, #root {
   background-color: rgb(51, 51, 51);
   color: lightgrey;
   text-align: center;
-  padding: 2rem 0 1rem; /* Added top padding (2rem) while keeping bottom padding (1rem) */
+  padding: 2rem 0 1rem; 
   width: 100%;
-  margin-top: 2rem; /* Additional space above the footer */
+  margin-top: 2rem;
 }
 
 .image-gallery {

@@ -13,6 +13,7 @@ export const Routes = [
         action: "all",
         rateLimited: true,
         protected: false,
+        requiresCredentials: false,
     },
 
     // Authentication
@@ -23,6 +24,7 @@ export const Routes = [
         action: "register",
         rateLimited: true,
         protected: false,
+        requiresCredentials: false,
     }, 
     {
         method: "post", 
@@ -31,6 +33,7 @@ export const Routes = [
         action: "authenticate", 
         rateLimited: true,
         protected: false,
+        requiresCredentials: false,
     },
     {
         method: "post", 
@@ -39,6 +42,7 @@ export const Routes = [
         action: "refreshToken", 
         rateLimited: true,
         protected: false,
+        requiresCredentials: true,
     },
 
     // Newsletter Signup Routes
@@ -49,6 +53,7 @@ export const Routes = [
         action: "save",
         rateLimited: false,
         protected: false,
+        requiresCredentials: false,
     }, 
     {
         method: "delete",
@@ -57,6 +62,7 @@ export const Routes = [
         action: "remove",
         rateLimited: false,
         protected: false,
+        requiresCredentials: false,
     },
     {
         method: "get",
@@ -75,6 +81,7 @@ export const Routes = [
         action: "getAllPhotos",
         rateLimited: false,
         protected: false,
+        requiresCredentials: false,
     },
     {
         method: "get",
@@ -83,5 +90,6 @@ export const Routes = [
         action: "getPhoto",
         rateLimited: false,
         protected: false,
+        requiresCredentials: false,
     }
 ]

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert, Container, Spinner } from "react-bootstrap";
 import DataTable from "../common/DataTable";
+import { useAuth, type AuthContextType } from "../../auth/AuthProvider";
 
 interface NewsletterSignupEntry {
     id: number;
@@ -16,11 +17,12 @@ interface NewsletterSignupEntry {
 const API_URL = import.meta.env.VITE_API_URL;
 
 
-async function getAllSignups(): Promise<NewsletterSignupEntry[]> {
+async function getAllSignups(token: string): Promise<NewsletterSignupEntry[]> {
     const response = await fetch(`${API_URL}/newsletter`, {
         method: 'GET',
         headers: {
             'Content-type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
     });
 
@@ -32,25 +34,33 @@ function SignupListPage() {
     const [signups, setSignups] = useState<NewsletterSignupEntry[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { isAuthenticated, token } = useAuth() as AuthContextType;
 
     const fetchDataSource = async () => {
-        try {
-            setSignups(await getAllSignups());
-        } catch (err) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError("An unknown error occurred when retrieving signup data.");
+        if (token) {
+            try {
+                setSignups(await getAllSignups(token));
+            } catch (err) {
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("An unknown error occurred when retrieving signup data.");
+                }
+            } finally {
+                setLoading(false);
             }
-        } finally {
-            setLoading(false);
         }
     }
 
     useEffect(() => {
-        fetchDataSource();
+        if (isAuthenticated) {
+            fetchDataSource();
+        }
     }, []);
 
+    if (!isAuthenticated) {
+        return <></>
+    }
 
     if (loading) {
         return (
@@ -75,8 +85,8 @@ function SignupListPage() {
 
     return (
         <>
+            <h2 className="mb-4">Newsletter Signups</h2>
             <Container className="mt-4">
-                <h2 className="mb-4">Newsletter Signups</h2>
                 <DataTable<NewsletterSignupEntry> data={signups} />
             </Container>
         </>
