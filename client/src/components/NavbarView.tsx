@@ -7,6 +7,7 @@ import { useAuth } from './auth/AuthProvider';
 import { Button, NavDropdown } from 'react-bootstrap';
 import ProtectedComponent from './auth/ProtectedComponent';
 import { FaCalendarAlt, FaImages, FaEnvelope, FaSignOutAlt } from 'react-icons/fa';
+import { UserRole } from './auth/UserRole';
 
 function NavbarView() {
     const [expanded, setExpanded] = useState(false);
@@ -58,18 +59,19 @@ function NavbarView() {
                             Contact
                         </Nav.Link>
 
-                        <ProtectedComponent>
+                        <ProtectedComponent requires={UserRole.BOARD}>
                             <NavDropdown 
-                                title="Admin"
-                                id="admin-dropdown"
+                                title="Manage"
+                                id="manage-dropdown"
                                 align="end"
                                 className="px-3"
                             >
                                 <NavDropdown.Item onClick={closeMenu} as={Link} to="/signups">
-                                    Event Signups
+                                    Newsletter Signups
                                 </NavDropdown.Item>
                             </NavDropdown>
-                            
+                        </ProtectedComponent>
+                        <ProtectedComponent>    
                             <Button 
                                 variant="outline-light rounded" 
                                 onClick={handleLogout} 

@@ -1,8 +1,13 @@
 import React, { createContext, useContext, useEffect, useState, } from 'react';
+import { UserRole } from './UserRole';
 
 export interface AuthContextType {
     isAuthenticated: boolean;
     isLoading: boolean;
+    // userId: number;
+    userRole: UserRole;
+    firstName: string;
+    lastName: string;
     login: (username: string, password: string) => Promise<boolean>;
     logout: () => void;
 }
@@ -18,6 +23,11 @@ const API_URL = import.meta.env.VITE_API_URL;
 export function AuthProvider(props: AuthProviderProps) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setIsLoading] = useState(true);
+    const [roleId, setRoleId] = useState<UserRole>(UserRole.NONE);
+    const [lastName, setLastName] = useState<string>("");
+    const [firstName, setFirstName] = useState<string>("");
+    // const [userId, setUserId] = useState(-1);
+
 
     const refreshToken = async(): Promise<boolean> => {
         try {
@@ -49,8 +59,16 @@ export function AuthProvider(props: AuthProviderProps) {
 
             if (!response.ok) return false;
 
+            const { firstName, lastName, roleId } = await response.json();
+
+            setFirstName(firstName);
+            setLastName(lastName);
+            setRoleId(roleId);
             setIsAuthenticated(true);
+
+            console.log(`Logged in as ${firstName} ${lastName} (${roleId})`)
             return true;
+
         } catch (error) {
             console.error('Login error: ', error);
             return false;
@@ -102,6 +120,10 @@ export function AuthProvider(props: AuthProviderProps) {
     const value = {
         isAuthenticated: isAuthenticated,
         isLoading: loading,
+        // userId: userId,
+        userRole: roleId,
+        firstName: firstName,
+        lastName: lastName,
         login: loginUser,
         logout: logoutUser,
     } as AuthContextType;
