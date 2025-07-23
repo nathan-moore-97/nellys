@@ -1,23 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
-import { AdminUser } from "../entity/AdminUser";
+import { User } from "../entity/User"
 import { AuthenticationService } from "../core/auth/AuthenticationService";
-import { strict } from "assert";
 import logger from "../logging/Logger";
-import { error } from "console";
 
 export class AuthenticationController {
     private authService: AuthenticationService =
-        new AuthenticationService(AppDataSource.getRepository(AdminUser));
-
-    // Middleware handles verifcation
-    async verify (request: Request, response: Response, next: NextFunction) {
-        response.status(202).end();
-    }
+        new AuthenticationService(AppDataSource.getRepository(User));
     
     async register(request: Request, response: Response, next: NextFunction) {
         try {
-            const { username, password } = request.body;
+            const { username, password, roleId, firstName, lastName } = request.body;
 
             // Validate input
             if (!username || !password) {
@@ -36,7 +29,7 @@ export class AuthenticationController {
                 return;
             }
 
-            const newUser = await this.authService.register(username, password);
+            const newUser = await this.authService.register(username, password, roleId, firstName, lastName);
 
             response.status(201).json({
                 id: newUser.id,
@@ -61,32 +54,38 @@ export class AuthenticationController {
             return;
         }
 
-        const {accessToken, refreshToken, user} = await this.authService.authenticate(username, password);
-        
-        if (!accessToken) {
+        try {
+            const {accessToken, refreshToken, user} = await this.authService.authenticate(username, password);
+            if (!accessToken) {
+                response.status(401).json({ error: "Invalid credentials"});
+                return;
+            }
+            
+            response.cookie('token', accessToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'strict',
+                maxAge: 15 * 60 * 1000,
+            });
+
+            response.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'strict',
+                path: '/auth/refresh',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
+
+            response.status(202).json({
+                username: user.username,
+                roleId: user.roleId,
+                firstName: user.firstName,
+                lastName: user.lastName,
+            });
+
+        } catch (error) {
             response.status(401).json({ error: "Invalid credentials"});
-            return;
         }
-
-        // TODO Save refresh token in database
-
-        response.cookie('token', accessToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'strict',
-            maxAge: 15 * 60 * 1000,
-        });
-
-        
-        response.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'strict',
-            path: '/auth/refresh',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
-
-        response.status(202).end();
     }
 
     async clear(request: Request, response: Response, next: NextFunction) {

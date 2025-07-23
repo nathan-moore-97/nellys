@@ -2,6 +2,8 @@ import { NewsletterSignupController } from "./controller/NewsletterSignupControl
 import { ApiHealthController } from "./controller/ApiHealthController";
 import { GalleryController } from "./controller/GalleryController";
 import { AuthenticationController } from "./controller/AuthenticationController";
+import rateLimit from "express-rate-limit";
+import { User, UserRole } from "./entity/User";
 
 export const Routes = [
     
@@ -15,15 +17,17 @@ export const Routes = [
         protected: false,
     },
 
+    // Role Management
+    // {
+    //     method: "post",
+    //     route: "/auth/roles/",
+    //     action: "setRole",
+    //     rateLimited: true,
+    //     protected: true,
+    //     requires: UserRole.ADMIN
+    // },
+
     // Authentication
-    {
-        method: "get",
-        route: "/auth/verify",
-        controller: AuthenticationController,
-        action: "verify",
-        rateLimited: false,
-        protected: true,
-    },
     {
         method: "post",
         route: "/auth/register",
@@ -81,6 +85,7 @@ export const Routes = [
         action: "all",
         rateLimited: false, 
         protected: true,
+        requires: UserRole.BOARD,
     },
 
     // Gallery

@@ -1,37 +1,42 @@
 import { Admin, Repository } from "typeorm";
-import { AdminUser } from "../../entity/AdminUser";
+import { User, UserRole } from "../../entity/User";
 import jwt, { SignOptions } from "jsonwebtoken"
-import logger from "../../logging/Logger";
 
 export const JWT_SECRET = process.env.JWT_SECRET || "secret";
 export const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "refresh-secret";
 const ACCESS_TOKEN_EXPIRATION = process.env.ACCESS_TOKEN_EXPIRATION || '15m';
 const REFRESH_TOKEN_EXPIRATION = process.env.REFRESH_TOKEN_EXPIRATION || '7d';
 
-interface TokenPayload {
+export interface TokenPayload {
     userId: number;
-    username: string;
+    roleId: number;
 }
 
 interface AuthenticatedUser {
     accessToken: string;
     refreshToken: string;
-    user: AdminUser;
+    user: User;
 }
 
 export class AuthenticationService {
     
-    constructor(private repo: Repository<AdminUser>) {}
+    constructor(private repo: Repository<User>) {}
     
     async userExists(username: string): Promise<boolean> {
         return await this.repo.findOneBy({ username }) != null;
     }
 
-    async register(username: string, password: string): Promise<AdminUser> {
-        const user = new AdminUser();
+    async register(username: string, password: string, roleId: UserRole,
+            firstName: string, lastName: string): Promise<User> {
+        const user = new User();
         user.username = username;
+        user.roleId = roleId;
+        user.firstName = firstName;
+        user.lastName = lastName;
+
         await user.setPassword(password);
         this.repo.save(user);
+        
         return user;
     }
 
@@ -42,13 +47,13 @@ export class AuthenticationService {
         if (!(await user.validatePassword(password))) return null;
 
         const token = jwt.sign(
-            { userId: user.id, username: user.username } as TokenPayload,
+            { userId: user.id, roleId: user.roleId } as TokenPayload,
             JWT_SECRET,
             { expiresIn: ACCESS_TOKEN_EXPIRATION } as SignOptions
         );
 
         const refresh = jwt.sign(
-            { userId: user.id, username: user.username } as TokenPayload,
+            { userId: user.id, roleId: user.roleId } as TokenPayload,
             JWT_REFRESH_SECRET,
             { expiresIn: REFRESH_TOKEN_EXPIRATION } as SignOptions
         );
@@ -57,8 +62,6 @@ export class AuthenticationService {
     }
 
     async verify(token: string): Promise<TokenPayload> {
-        let username: string;
-
         return jwt.verify(token, JWT_SECRET) as TokenPayload;
     }
 
@@ -72,14 +75,13 @@ export class AuthenticationService {
             }
 
             const token = jwt.sign(
-                { userId: user.id, username: user.username } as TokenPayload,
+                { userId: user.id, roleId: user.roleId } as TokenPayload,
                 JWT_SECRET,
                 { expiresIn: ACCESS_TOKEN_EXPIRATION } as SignOptions
             );
 
             return token;
         } catch (error) {
-            logger.warn('Refresh token verifcation failed:', error);
             return null;
         }
     }

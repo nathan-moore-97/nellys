@@ -11,6 +11,7 @@ import { StorageServiceFactory } from "./gallery/ImageStorageService";
 import cookieParser from "cookie-parser";
 import logger from "./logging/Logger";
 import { authenticateJWT } from "./middleware/JWTAuthenticatorMiddleware";
+import { requireRoleLevel } from "./middleware/RoleValidatorMiddleware";
 
 AppDataSource.initialize().then(async () => {
 
@@ -49,6 +50,10 @@ AppDataSource.initialize().then(async () => {
         // Must have a valid short lived token
         if (route.protected) {
             middlewares.push(authenticateJWT);
+        }
+
+        if (route.requires) {
+            middlewares.push(requireRoleLevel(route.requires));
         }
 
         (app as any)[route.method](route.route, ...middlewares, (req: Request, res: Response, next: Function) => {

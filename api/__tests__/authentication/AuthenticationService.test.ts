@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { AdminUser } from "../../src/entity/AdminUser";
+import { User, UserRole } from "../../src/entity/User";
 import { AuthenticationService } from "../../src/core/auth/AuthenticationService";
 
 // Will need to update this method if the hashing library has changed
@@ -22,14 +22,14 @@ const isLikelyJWT = (testStr: string): boolean => {
 
 describe('AuthenticationService', () => {
     
-    let mockedRepo: jest.Mocked<Repository<AdminUser>>;
+    let mockedRepo: jest.Mocked<Repository<User>>;
     let authService: AuthenticationService;
     
     beforeEach(() => {
         mockedRepo = {
             findOneBy: jest.fn(),
             save: jest.fn()
-        } as unknown as jest.Mocked<Repository<AdminUser>>;
+        } as unknown as jest.Mocked<Repository<User>>;
 
         authService = new AuthenticationService(mockedRepo);
     });
@@ -37,24 +37,33 @@ describe('AuthenticationService', () => {
     test('should register a new user in the database', async () => {
         const username: string = 'username';
         const password: string = 'password';
+        const roleId: UserRole = UserRole.ADMIN;
+        const firstName: string = 'Nathan';
+        const lastName: string = 'Moore';
 
-        const user: AdminUser = await authService.register(username, password);
+        const user: User = await authService.register(username, password, roleId, firstName, lastName);
         expect(user).toEqual(expect.objectContaining({username: username}));
     });
 
     test('should not save passwords as plaintext', async () => {
         const username: string = 'username';
         const password: string = 'password';
+        const roleId: UserRole = UserRole.ADMIN;
+        const firstName: string = 'Nathan';
+        const lastName: string = 'Moore';
 
-        const user: AdminUser = await authService.register(username, password);
+        const user: User = await authService.register(username, password, roleId, firstName, lastName);
         expect(user.passwordHash === password).toBeFalsy();
     });
 
     test('should hash passwords', async () => {
         const username: string = 'username';
         const password: string = 'password';
+        const roleId: UserRole = UserRole.ADMIN;
+        const firstName: string = 'Nathan';
+        const lastName: string = 'Moore';
 
-        const user: AdminUser = await authService.register(username, password);
+        const user: User = await authService.register(username, password, roleId, firstName, lastName);
         expect(isLikelyBcryptHash(user.passwordHash)).toBeTruthy();
     });
 
@@ -70,8 +79,11 @@ describe('AuthenticationService', () => {
     test('invalid credentials return null', async () => {
         const username: string = 'username';
         const password: string = 'password';
+        const roleId: UserRole = UserRole.ADMIN;
+        const firstName: string = 'Nathan';
+        const lastName: string = 'Moore';
 
-        const user = await authService.register(username, password);
+        const user = await authService.register(username, password, roleId, firstName, lastName);
         mockedRepo.findOneBy.mockResolvedValue(user);
 
         const token = await authService.authenticate(username, "notPassword");
@@ -82,22 +94,92 @@ describe('AuthenticationService', () => {
     test('can authenticate a user', async () => {
         const username: string = 'username';
         const password: string = 'password';
+        const roleId: UserRole = UserRole.ADMIN;
+        const firstName: string = 'Nathan';
+        const lastName: string = 'Moore';
 
-        const user = await authService.register(username, password);
-        mockedRepo.findOneBy.mockResolvedValue(user);
+        const exUser = await authService.register(username, password, roleId, firstName, lastName);
+        mockedRepo.findOneBy.mockResolvedValue(exUser);
 
-        const {token} = await authService.authenticate(username, password);
+        const {accessToken, refreshToken, user} = await authService.authenticate(username, password);
 
-        expect(isLikelyJWT(token)).toBeTruthy();
+        expect(isLikelyJWT(accessToken)).toBeTruthy();
+        expect(isLikelyJWT(refreshToken)).toBeTruthy();
+        expect(user.id).toEqual(exUser.id);
     });
 
     test('after registration a user exists', async () => {
         const username: string = 'username';
         const password: string = 'password';
+        const roleId: UserRole = UserRole.ADMIN;
+        const firstName: string = 'Nathan';
+        const lastName: string = 'Moore';
 
-        const user = await authService.register(username, password);
+        const user = await authService.register(username, password, roleId, firstName, lastName);
         mockedRepo.findOneBy.mockResolvedValue(user);
 
         expect(await authService.userExists(username)).toBeTruthy();
+    });
+
+    test('a token can be verified and contains id and role', async () => {
+        const username: string = 'username';
+        const password: string = 'password';
+        const roleId: UserRole = UserRole.ADMIN;
+        const firstName: string = 'Nathan';
+        const lastName: string = 'Moore';
+
+        const exUser = await authService.register(username, password, roleId, firstName, lastName);
+        mockedRepo.findOneBy.mockResolvedValue(exUser);
+
+        const {accessToken, refreshToken, user} = await authService.authenticate(username, password);
+        const payload = await authService.verify(accessToken);
+    
+        expect(payload.roleId).toEqual(roleId);
+        expect(payload.userId).toEqual(exUser.id);
+    });
+
+    test('a token can be refreshed and contains id and role', async () => {
+        const username: string = 'username';
+        const password: string = 'password';
+        const roleId: UserRole = UserRole.ADMIN;
+        const firstName: string = 'Nathan';
+        const lastName: string = 'Moore';
+
+        const exUser = await authService.register(username, password, roleId, firstName, lastName);
+        mockedRepo.findOneBy.mockResolvedValue(exUser);
+
+        const {accessToken, refreshToken, user} = await authService.authenticate(username, password);
+        const token = await authService.refresh(refreshToken);
+        const payload = await authService.verify(token);
+
+        expect(payload.roleId).toEqual(roleId);
+        expect(payload.userId).toEqual(exUser.id);
+    });
+
+    test('an invalid token cannot be refreshed', async () => {
+        const token = await authService.refresh("BAD TOKEN");
+        expect(token).toBeNull();
+    });
+
+    test('null token cannot be refreshed', async () => {
+        const token = await authService.refresh(null);
+        expect(token).toBeNull();
+    });
+
+    test('an authenticated users token cannot be used to refresh after they are removed from the database', async () => {
+        const username: string = 'username';
+        const password: string = 'password';
+        const roleId: UserRole = UserRole.ADMIN;
+        const firstName: string = 'Nathan';
+        const lastName: string = 'Moore';
+
+        const exUser = await authService.register(username, password, roleId, firstName, lastName);
+        mockedRepo.findOneBy.mockResolvedValue(exUser);
+
+        const {accessToken, refreshToken, user} = await authService.authenticate(username, password);
+        mockedRepo.findOneBy.mockResolvedValue(null);
+
+        const newAccessToken = await authService.refresh(refreshToken);
+        expect(newAccessToken).toBeNull();
     });
 });
