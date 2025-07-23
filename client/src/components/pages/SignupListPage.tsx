@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Alert, Container, Spinner } from "react-bootstrap";
 import DataTable from "../common/DataTable";
-import { useAuth, type AuthContextType } from "../../auth/AuthProvider";
+import { useAuth, type AuthContextType } from "../auth/AuthProvider";
+import ProtectedComponent from "../auth/ProtectedComponent";
 
 interface NewsletterSignupEntry {
     id: number;
@@ -58,10 +59,6 @@ function SignupListPage() {
         }
     }, []);
 
-    if (!isAuthenticated) {
-        return <></>
-    }
-
     if (loading) {
         return (
             <Container className="text-center mt5">
@@ -85,7 +82,9 @@ function SignupListPage() {
         <>
             <h2 className="mb-4">Newsletter Signups</h2>
             <Container className="mt-4">
-                <DataTable<NewsletterSignupEntry> data={signups} />
+                <ProtectedComponent>
+                    <DataTable<NewsletterSignupEntry> data={signups} />
+                </ProtectedComponent>
             </Container>
         </>
     );

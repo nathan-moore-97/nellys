@@ -9,13 +9,6 @@ function AddressView() {
                     22309
                 </strong>
             </address>
-            
-            <div className="mt-3">
-                <p>
-                    <a href="tel:1-703-780-4000" className="text-decoration-none">(703) 780-4000</a><br />
-                    <a href="mailto:nellysneedlers@gmail.com" className="text-decoration-none">nellysneedlers@gmail.com</a>
-                </p>
-            </div>
         </div>
         </>
     );

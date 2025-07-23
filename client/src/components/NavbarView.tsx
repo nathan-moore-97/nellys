@@ -1,54 +1,12 @@
-import { useState, type MouseEvent } from 'react';
+import { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth, type AuthContextType } from '../auth/AuthProvider';
+import { useAuth } from './auth/AuthProvider';
 import { Button, NavDropdown } from 'react-bootstrap';
-
-interface AuthenticatedNavProps {
-    path: string
-    onClick?: (event: MouseEvent<HTMLImageElement>) => void;
-    children?: React.ReactNode;
-} 
-
-interface AuthenticatedDropdownProps {
-    children?: React.ReactNode;
-    title: string;
-}
-
-interface AuthenticatedButtonProps {
-    children?: React.ReactNode;
-    onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-}
-
-function AuthenticatedDropdown (props: AuthenticatedDropdownProps) {
-    const { isAuthenticated } = useAuth() as AuthContextType;
-    if (!isAuthenticated) {
-        return null;
-    }
-
-    return <NavDropdown menuVariant='dark' title={props.title}>{props.children}</NavDropdown>
-}
-
-function AuthenticatedButton (props: AuthenticatedButtonProps) {
-    const { isAuthenticated } = useAuth() as AuthContextType;
-    if (!isAuthenticated) {
-        return null;
-    }
-
-    return <Button onClick={props.onClick}>{props.children}</Button>
-}
-
-function AuthenticatedNav (props: AuthenticatedNavProps)  {
-    const { isAuthenticated } = useAuth() as AuthContextType;
-
-    if (!isAuthenticated) {
-        return null;
-    }
-
-    return <Nav.Link onClick={() => {props.onClick}} as={Link} to={props.path}>{props.children}</Nav.Link>
-}
+import ProtectedComponent from './auth/ProtectedComponent';
+import { FaCalendarAlt, FaImages, FaEnvelope, FaSignOutAlt } from 'react-icons/fa';
 
 function NavbarView() {
     const [expanded, setExpanded] = useState(false);
@@ -56,29 +14,71 @@ function NavbarView() {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        console.log("Logout click")
         await logout();
         navigate("/");
+        setExpanded(false);
     }
 
+    const closeMenu = () => setExpanded(false);
+
     return (
-        <Navbar expanded={expanded} bg="primary" variant="dark" expand="sm" className="mb-4">
-            <Container>
-                <Navbar.Brand as={Link} to="/">
-                    Nellys Needlers
+        <Navbar 
+            expanded={expanded} 
+            bg="primary" 
+            variant="dark" 
+            expand="lg" 
+            className="shadow-sm"
+        >
+            <Container fluid="lg">
+                <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
+                    Nelly's Needlers
                 </Navbar.Brand>
                         
-                <Navbar.Toggle onClick={() => {setExpanded(!expanded)}} aria-controls="basic-navbar" />
+                <Navbar.Toggle 
+                    onClick={() => setExpanded(!expanded)} 
+                    aria-controls="main-navbar" 
+                >
+                    <span className="navbar-toggler-icon"></span>
+                </Navbar.Toggle>
 
-                <Navbar.Collapse id="basic-navbar" >
-                    <Nav className="ms-auto">
-                        <Nav.Link onClick={() => {setExpanded(false)}} as={Link} to="/calendar">Calendar</Nav.Link>
-                        <Nav.Link onClick={() => {setExpanded(false)}} as={Link} to="/gallery">Gallery</Nav.Link>
-                        <Nav.Link onClick={() => {setExpanded(false)}} as={Link} to="/contact">Contact</Nav.Link>
-                        <AuthenticatedDropdown title='Admin'>
-                            <AuthenticatedNav onClick={() => {setExpanded(false)}} path='/signups'>Signups</AuthenticatedNav>
-                        </AuthenticatedDropdown>
-                        <AuthenticatedButton onClick={handleLogout}>Logout</AuthenticatedButton>
+                <Navbar.Collapse id="main-navbar">
+                    <Nav className="ms-auto align-items-lg-center">
+                        <Nav.Link onClick={closeMenu} as={Link} to="/calendar" className="d-flex align-items-center px-3">
+                            <FaCalendarAlt className="me-2" />
+                            Calendar
+                        </Nav.Link>
+                        
+                        <Nav.Link onClick={closeMenu} as={Link} to="/gallery" className="d-flex align-items-center px-3">
+                            <FaImages className="me-2" />
+                            Gallery
+                        </Nav.Link>
+                        
+                        <Nav.Link onClick={closeMenu} as={Link} to="/contact" className="d-flex align-items-center px-3">
+                            <FaEnvelope className="me-2" />
+                            Contact
+                        </Nav.Link>
+
+                        <ProtectedComponent>
+                            <NavDropdown 
+                                title="Admin"
+                                id="admin-dropdown"
+                                align="end"
+                                className="px-3"
+                            >
+                                <NavDropdown.Item onClick={closeMenu} as={Link} to="/signups">
+                                    Event Signups
+                                </NavDropdown.Item>
+                            </NavDropdown>
+                            
+                            <Button 
+                                variant="outline-light rounded" 
+                                onClick={handleLogout} 
+                                className="ms-lg-2 mt-2 mt-lg-0 d-flex align-items-center"
+                            >
+                                <FaSignOutAlt className="me-2" />
+                                Logout
+                            </Button>
+                        </ProtectedComponent>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

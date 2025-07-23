@@ -19,21 +19,21 @@ AppDataSource.initialize().then(async () => {
     const app = express();
     const rateLimiter = rateLimit({
         windowMs: 15 * 60 * 1000,
-        max: 10,
+        max: 100,
     });
 
     const speedLimiter = slowDown({
         windowMs: 15 * 60 * 1000,
-        delayAfter: 5,
+        delayAfter: 25,
         delayMs: () => 2000,
     });
 
-app.use(cors({
-    origin: process.env.WEB_APP_ROOT_URL, 
-    credentials: true, 
-}));
+    app.use(cors({
+        origin: process.env.WEB_APP_ROOT_URL, 
+        credentials: true, 
+    }));
 
-app.use(cookieParser());
+    app.use(cookieParser());
 
     app.use(bodyParser.json());
 

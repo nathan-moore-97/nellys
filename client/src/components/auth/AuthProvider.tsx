@@ -63,7 +63,7 @@ export function AuthProvider(props: AuthProviderProps) {
                 method: 'POST',
                 credentials: 'include',
             });
-            console.log("Logout fired");
+            
         } catch (error) {
             console.error('Logout error: ', error);
         } finally {

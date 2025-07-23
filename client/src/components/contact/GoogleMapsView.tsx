@@ -7,7 +7,7 @@ function GoogleMapsView() {
     return (
        <>
        <div className="shadow-sm rounded overflow-hidden">
-            <Ratio aspectRatio="16x9">
+            <Ratio aspectRatio="4x3">
                 <iframe
                     style={{ border: 0 }}
                     loading="lazy"

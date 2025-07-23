@@ -86,7 +86,6 @@ export class AuthenticationController {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        logger.info(`ID=${user.id} USER=${user.username} New token pair issued`);
         response.status(202).end();
     }
 
@@ -95,16 +94,26 @@ export class AuthenticationController {
         // TODO clear refresh cookie from the database
         const user = (request as any).user;
 
-        logger.info(`ID=${user.id} USER=${user.username} Logged out`);
+        response.clearCookie('token', {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+        });
 
-        response.clearCookie('token');
-        response.clearCookie('refreshToken');
+        response.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: false,       
+            sameSite: 'strict',  
+            path: '/auth/refresh',
+        });
 
         response.status(204).end();
     }
 
     async refreshToken(request: Request, response: Response, next: NextFunction) {
         const refreshToken = request.cookies?.refreshToken;
+
+        logger.debug("Refresh token requested");
 
         if (!refreshToken) {
             response.status(401).json({error: "Refresh token required"});
@@ -122,7 +131,7 @@ export class AuthenticationController {
             httpOnly: true,
             secure: false,
             sameSite: 'strict',
-            maxAge: 60 * 1000,
+            maxAge: 15 * 60 * 1000,
         });
 
         response.status(202).end();

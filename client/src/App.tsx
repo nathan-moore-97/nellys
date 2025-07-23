@@ -11,8 +11,8 @@ import SignupListPage from './components/pages/SignupListPage'
 import LoginPage from './components/pages/LoginPage'
 import GalleryPage from './components/pages/GalleryPage'
 import UnsubscribePage from './components/pages/UnsubscribePage'
-import { AuthProvider, useAuth } from './auth/AuthProvider'
-import { ProtectedRoute } from './auth/ProtectedRoute'
+import { AuthProvider, useAuth } from './components/auth/AuthProvider'
+import { ProtectedRoute } from './components/auth/ProtectedRoute'
 
 function FooterConditional() {
     const location = useLocation();

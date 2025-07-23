@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Col, Row, Form, Button, Container, Alert } from "react-bootstrap";
-import { useAuth, type AuthContextType } from "../../auth/AuthProvider";
+import { useAuth, type AuthContextType } from "../auth/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 interface LoginRequest {
