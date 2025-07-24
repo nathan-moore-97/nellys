@@ -7,14 +7,14 @@ import CalendarPage from './components/pages/CalendarPage'
 import NavbarView from './components/NavbarView'
 import { Container, Spinner } from 'react-bootstrap'
 import FooterView from './components/FooterView'
-import SignupListPage from './components/pages/SignupListPage'
+import SignupListPage from './components/pages/manage/SignupListPage'
 import LoginPage from './components/pages/LoginPage'
 import GalleryPage from './components/pages/GalleryPage'
 import UnsubscribePage from './components/pages/UnsubscribePage'
 import { AuthProvider, useAuth } from './components/auth/AuthProvider'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import { UserRole } from './components/auth/UserRole'
-import UserListPage from './components/pages/UserListPage'
+import UserListPage from './components/pages/admin/UserListPage'
 
 function FooterConditional() {
     const location = useLocation();
@@ -51,13 +51,13 @@ function AppContent() {
                         <Route path="/unsubscribe" element={<UnsubscribePage />} />
                         <Route path="/gallery" element={<GalleryPage />} />
                         
-                        <Route path="/signups" element={
+                        <Route path="/manage/signups" element={
                             <ProtectedRoute>
                                 <SignupListPage />
                             </ProtectedRoute>
                         } />
 
-                        <Route path="/users" element={
+                        <Route path="/admin/users" element={
                             <ProtectedRoute requires={UserRole.ADMIN}>
                                 <UserListPage />
                             </ProtectedRoute>

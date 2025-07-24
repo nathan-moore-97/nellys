@@ -2,24 +2,15 @@ import { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from './auth/AuthProvider';
-import { Button, NavDropdown } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { NavDropdown } from 'react-bootstrap';
 import ProtectedComponent from './auth/ProtectedComponent';
-import { FaCalendarAlt, FaImages, FaEnvelope, FaSignOutAlt } from 'react-icons/fa';
+import { FaCalendarAlt, FaImages, FaEnvelope } from 'react-icons/fa';
 import { UserRole } from './auth/UserRole';
+import { LogoutButton } from './auth/LogoutButton';
 
 function NavbarView() {
     const [expanded, setExpanded] = useState(false);
-    const { logout } = useAuth();
-    const navigate = useNavigate();
-
-    const handleLogout = async () => {
-        await logout();
-        navigate("/");
-        setExpanded(false);
-    }
-
     const closeMenu = () => setExpanded(false);
 
     return (
@@ -64,9 +55,9 @@ function NavbarView() {
                                 title="Manage"
                                 id="manage-dropdown"
                                 align="end"
-                                className="px-3"
+                                className="px-1"
                             >
-                                <NavDropdown.Item onClick={closeMenu} as={Link} to="/signups">
+                                <NavDropdown.Item onClick={closeMenu} as={Link} to="/manage/signups">
                                     Newsletter Signups
                                 </NavDropdown.Item>
                             </NavDropdown>
@@ -76,22 +67,15 @@ function NavbarView() {
                                 title="Admin"
                                 id="admin-dropdown"
                                 align="end"
-                                className="px-3"
+                                className="px-1"
                             >
-                                <NavDropdown.Item onClick={closeMenu} as={Link} to="/users">
+                                <NavDropdown.Item onClick={closeMenu} as={Link} to="/admin/users">
                                     Users
                                 </NavDropdown.Item>
                             </NavDropdown>
                         </ProtectedComponent>
                         <ProtectedComponent>    
-                            <Button 
-                                variant="outline-light rounded" 
-                                onClick={handleLogout} 
-                                className="ms-lg-2 mt-2 mt-lg-0 d-flex align-items-center"
-                            >
-                                <FaSignOutAlt className="me-2" />
-                                Logout
-                            </Button>
+                            <LogoutButton />
                         </ProtectedComponent>
                     </Nav>
                 </Navbar.Collapse>

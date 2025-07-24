@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
 import { Alert, Container, Spinner } from "react-bootstrap";
-import DataTable from "../common/DataTable";
-import { useAuth, type AuthContextType } from "../auth/AuthProvider";
-import ProtectedComponent from "../auth/ProtectedComponent";
+import DataTable from "../../common/DataTable";
+import { useAuth, type AuthContextType } from "../../auth/AuthProvider";
+import ProtectedComponent from "../../auth/ProtectedComponent";
+import { UserRole } from "../../auth/UserRole";
 
-interface NewsletterSignupEntry {
-    id: number;
-    email: string;
-    firstName: string;
-    lastName: string;
-    greeting: string | null;
-    isActive: boolean;
-    cancellationReason: string | null;
+interface UserEntry {
+    id: number,
+    username: string,
+    firstName: string,
+    lastName: string,
+    roleId: UserRole,
 }
 
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 
-async function getAllSignups(): Promise<NewsletterSignupEntry[]> {
-    const response = await fetch(`${API_URL}/newsletter`, {
+async function getAllUsers(): Promise<UserEntry[]> {
+    const response = await fetch(`${API_URL}/admin/users`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -27,12 +26,12 @@ async function getAllSignups(): Promise<NewsletterSignupEntry[]> {
         },
     });
 
-    return await response.json() as NewsletterSignupEntry[];
+    return await response.json() as UserEntry[];
 }
 
-function SignupListPage() {
+function UserListPage() {
 
-    const [signups, setSignups] = useState<NewsletterSignupEntry[]>([]);
+    const [users, setUsers] = useState<UserEntry[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { isAuthenticated } = useAuth() as AuthContextType;
@@ -40,7 +39,7 @@ function SignupListPage() {
     const fetchDataSource = async () => {
         if (isAuthenticated) {
             try {
-                setSignups(await getAllSignups());
+                setUsers(await getAllUsers());
             } catch (err) {
                 if (err instanceof Error) {
                     setError(err.message);
@@ -80,14 +79,19 @@ function SignupListPage() {
 
     return (
         <>
-            <h2 className="mb-4">Newsletter Signups</h2>
+            <h2 className="mb-4">Users</h2>
             <Container className="mt-4">
-                <ProtectedComponent>
-                    <DataTable<NewsletterSignupEntry> data={signups} />
+                <ProtectedComponent requires={UserRole.ADMIN}>
+                    <DataTable<UserEntry> 
+                        data={users}
+                        enumMap={{
+                            roleId: UserRole
+                        }} 
+                    />
                 </ProtectedComponent>
             </Container>
         </>
     );
 }
 
-export default SignupListPage;
+export default UserListPage;
