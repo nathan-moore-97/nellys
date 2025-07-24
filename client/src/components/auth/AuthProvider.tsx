@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, } from 'react';
 import { UserRole } from './UserRole';
+import { isStoredUser, type StoredUser } from './StoredUser';
+import { useValidatedSessionStorage } from '../common/hooks/UseValidatedSessionStorage';
 
 export interface AuthContextType {
     isAuthenticated: boolean;
@@ -23,10 +25,13 @@ const API_URL = import.meta.env.VITE_API_URL;
 export function AuthProvider(props: AuthProviderProps) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setIsLoading] = useState(true);
-    const [roleId, setRoleId] = useState<UserRole>(UserRole.NONE);
-    const [lastName, setLastName] = useState<string>("");
-    const [firstName, setFirstName] = useState<string>("");
-    // const [userId, setUserId] = useState(-1);
+    
+    const [userData, setUserData] = useValidatedSessionStorage<StoredUser | null>(
+        'user_data',
+        null,
+        (data): data is StoredUser | null => 
+        data === null || isStoredUser(data)
+    );
 
 
     const refreshToken = async(): Promise<boolean> => {
@@ -61,9 +66,12 @@ export function AuthProvider(props: AuthProviderProps) {
 
             const { firstName, lastName, roleId } = await response.json();
 
-            setFirstName(firstName);
-            setLastName(lastName);
-            setRoleId(roleId);
+            setUserData({
+                firstName: firstName,
+                lastName: lastName,
+                roleId: roleId
+            });
+
             setIsAuthenticated(true);
 
             console.log(`Logged in as ${firstName} ${lastName} (${roleId})`)
@@ -86,6 +94,7 @@ export function AuthProvider(props: AuthProviderProps) {
             console.error('Logout error: ', error);
         } finally {
             setIsAuthenticated(false);
+            window.sessionStorage.removeItem('user_data');
         }
     }
 
@@ -121,9 +130,9 @@ export function AuthProvider(props: AuthProviderProps) {
         isAuthenticated: isAuthenticated,
         isLoading: loading,
         // userId: userId,
-        userRole: roleId,
-        firstName: firstName,
-        lastName: lastName,
+        userRole: userData?.roleId,
+        firstName: userData?.firstName,
+        lastName: userData?.lastName,
         login: loginUser,
         logout: logoutUser,
     } as AuthContextType;

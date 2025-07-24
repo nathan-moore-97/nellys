@@ -14,6 +14,7 @@ import UnsubscribePage from './components/pages/UnsubscribePage'
 import { AuthProvider, useAuth } from './components/auth/AuthProvider'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import { UserRole } from './components/auth/UserRole'
+import UserListPage from './components/pages/UserListPage'
 
 function FooterConditional() {
     const location = useLocation();
@@ -51,8 +52,14 @@ function AppContent() {
                         <Route path="/gallery" element={<GalleryPage />} />
                         
                         <Route path="/signups" element={
-                            <ProtectedRoute requires={UserRole.MEMBER}>
+                            <ProtectedRoute>
                                 <SignupListPage />
+                            </ProtectedRoute>
+                        } />
+
+                        <Route path="/users" element={
+                            <ProtectedRoute requires={UserRole.ADMIN}>
+                                <UserListPage />
                             </ProtectedRoute>
                         } />
                         

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User"
 import { AuthenticationService } from "../core/auth/AuthenticationService";
-import logger from "../logging/Logger";
+import logger, { logAsync } from "../logging/Logger";
 
 export class AuthenticationController {
     private authService: AuthenticationService =

@@ -21,6 +21,10 @@ interface AuthenticatedUser {
 export class AuthenticationService {
     
     constructor(private repo: Repository<User>) {}
+
+    async users(): Promise<User[]> {
+        return this.repo.find();
+    }
     
     async userExists(username: string): Promise<boolean> {
         return await this.repo.findOneBy({ username }) != null;

@@ -4,6 +4,8 @@ import { GalleryController } from "./controller/GalleryController";
 import { AuthenticationController } from "./controller/AuthenticationController";
 import rateLimit from "express-rate-limit";
 import { User, UserRole } from "./entity/User";
+import { AdminController } from "./controller/AdminController";
+import { Admin } from "typeorm";
 
 export const Routes = [
     
@@ -17,15 +19,25 @@ export const Routes = [
         protected: false,
     },
 
-    // Role Management
-    // {
-    //     method: "post",
-    //     route: "/auth/roles/",
-    //     action: "setRole",
-    //     rateLimited: true,
-    //     protected: true,
-    //     requires: UserRole.ADMIN
-    // },
+    // Admin and Management
+    {
+        method: "post",
+        route: "/admin/users/role",
+        action: "setRole",
+        controller: AdminController,
+        rateLimited: true,
+        protected: true,
+        requires: UserRole.ADMIN
+    },
+    {
+        method: "get",
+        route: "/admin/users",
+        action: "all",
+        controller: AdminController,
+        rateLimited: true,
+        protected: true,
+        requires: UserRole.ADMIN
+    },
 
     // Authentication
     {

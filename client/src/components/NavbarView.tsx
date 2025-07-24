@@ -71,6 +71,18 @@ function NavbarView() {
                                 </NavDropdown.Item>
                             </NavDropdown>
                         </ProtectedComponent>
+                        <ProtectedComponent requires={UserRole.ADMIN}>
+                            <NavDropdown 
+                                title="Admin"
+                                id="admin-dropdown"
+                                align="end"
+                                className="px-3"
+                            >
+                                <NavDropdown.Item onClick={closeMenu} as={Link} to="/users">
+                                    Users
+                                </NavDropdown.Item>
+                            </NavDropdown>
+                        </ProtectedComponent>
                         <ProtectedComponent>    
                             <Button 
                                 variant="outline-light rounded" 
