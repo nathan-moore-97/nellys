@@ -5,7 +5,7 @@ import { User } from "../entity/User";
 import logger from "../logging/Logger";
 import { TokenExpiredError } from "jsonwebtoken";
 
-const authService = new AuthenticationService(AppDataSource.getRepository(User));
+const authService = new AuthenticationService(AppDataSource.getRepository(User), null);
 
 export const authenticateJWT = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.token;

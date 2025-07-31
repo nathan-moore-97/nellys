@@ -38,13 +38,29 @@ export class EmailBuilder {
         return this;
     }
 
+    addRegistrationLink(token: string) {
+        this.email.body += `<a href="${process.env.WEB_APP_ROOT_URL}/registration?token=${token}">Click Here</a>`;
+        return this;
+    }
+
     addUnsubscribeLink(email_addr: string): EmailBuilder {
         this.email.body += `<a href="${process.env.WEB_APP_ROOT_URL}/unsubscribe?email=${email_addr}">Unsubscribe</a>`;
         return this;
     }
 }
 
+
+
 export class EmailDirector {
+    static registrationEmail(token: string): Email {
+        return new EmailBuilder()
+            .addSubject(`New Nelly's User Registration`)
+            .addContent(`Click the link below to register with the Nelly's.`)
+            .addContent(`Link will expire in 15 minutes`)
+            .addRegistrationLink(token)
+            .email;
+    }
+    
     static welcome(signup: NewsletterSignup): Email {
         return new EmailBuilder()
             .addSubject(`Welcome, ${signup.firstName}!`)

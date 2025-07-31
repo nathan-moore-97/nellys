@@ -19,7 +19,7 @@ export const Routes = [
         protected: false,
     },
 
-    // Admin and Management
+    // Authentication, Admin and Management
     {
         method: "post",
         route: "/admin/users/role",
@@ -32,7 +32,16 @@ export const Routes = [
     {
         method: "get",
         route: "/admin/users",
-        action: "all",
+        action: "users",
+        controller: AdminController,
+        rateLimited: true,
+        protected: true,
+        requires: UserRole.ADMIN
+    },
+    {
+        method: "get",
+        route: "/admin/users/pending",
+        action: "pendingUsers",
         controller: AdminController,
         rateLimited: true,
         protected: true,
@@ -40,6 +49,23 @@ export const Routes = [
     },
 
     // Authentication
+    {
+        method: "post",
+        route: "/auth/register/create",
+        controller: AuthenticationController,
+        action: "createRegistrationToken",
+        rateLimited: true,
+        protected: true,
+        requires: UserRole.ADMIN
+    },
+    {
+        method: "post",
+        route: "/auth/register/verify",
+        controller: AuthenticationController,
+        action: "verifyRegistrationToken",
+        rateLimited: true,
+        protected: false,
+    },
     {
         method: "post",
         route: "/auth/register",

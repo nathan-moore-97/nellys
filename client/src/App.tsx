@@ -15,6 +15,7 @@ import { AuthProvider, useAuth } from './components/auth/AuthProvider'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import { UserRole } from './components/auth/UserRole'
 import UserListPage from './components/pages/admin/UserListPage'
+import RegisterUserPage from './components/pages/admin/RegisterUser'
 
 function FooterConditional() {
     const location = useLocation();
@@ -64,6 +65,7 @@ function AppContent() {
                         } />
                         
                         <Route path="/login" element={<LoginPage />} />
+                        <Route path="/registration" element={<RegisterUserPage />}/>
                     </Routes>
                 </Container>
                 <FooterConditional />

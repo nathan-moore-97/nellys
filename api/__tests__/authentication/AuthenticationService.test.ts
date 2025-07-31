@@ -1,6 +1,7 @@
 import { Repository } from "typeorm";
 import { User, UserRole } from "../../src/entity/User";
 import { AuthenticationService } from "../../src/core/auth/AuthenticationService";
+import { UserRegistration } from "../../src/entity/UserRegistration";
 
 // Will need to update this method if the hashing library has changed
 const isLikelyBcryptHash = (testStr: string): boolean => {
@@ -22,16 +23,23 @@ const isLikelyJWT = (testStr: string): boolean => {
 
 describe('AuthenticationService', () => {
     
-    let mockedRepo: jest.Mocked<Repository<User>>;
+    let mockedUserRepo: jest.Mocked<Repository<User>>;
     let authService: AuthenticationService;
+    let mockedRegistrationRepo: jest.Mocked<Repository<UserRegistration>>;
     
     beforeEach(() => {
-        mockedRepo = {
+        mockedUserRepo = {
             findOneBy: jest.fn(),
             save: jest.fn()
         } as unknown as jest.Mocked<Repository<User>>;
 
-        authService = new AuthenticationService(mockedRepo);
+        mockedRegistrationRepo = {
+            findOneBy: jest.fn(),
+            save: jest.fn(),
+            delete: jest.fn(),
+        } as unknown as jest.Mocked<Repository<UserRegistration>>;
+
+        authService = new AuthenticationService(mockedUserRepo, mockedRegistrationRepo);
     });
 
     test('should register a new user in the database', async () => {
@@ -84,7 +92,7 @@ describe('AuthenticationService', () => {
         const lastName: string = 'Moore';
 
         const user = await authService.register(username, password, roleId, firstName, lastName);
-        mockedRepo.findOneBy.mockResolvedValue(user);
+        mockedUserRepo.findOneBy.mockResolvedValue(user);
 
         const token = await authService.authenticate(username, "notPassword");
 
@@ -99,7 +107,7 @@ describe('AuthenticationService', () => {
         const lastName: string = 'Moore';
 
         const exUser = await authService.register(username, password, roleId, firstName, lastName);
-        mockedRepo.findOneBy.mockResolvedValue(exUser);
+        mockedUserRepo.findOneBy.mockResolvedValue(exUser);
 
         const {accessToken, refreshToken, user} = await authService.authenticate(username, password);
 
@@ -116,9 +124,9 @@ describe('AuthenticationService', () => {
         const lastName: string = 'Moore';
 
         const user = await authService.register(username, password, roleId, firstName, lastName);
-        mockedRepo.findOneBy.mockResolvedValue(user);
+        mockedUserRepo.findOneBy.mockResolvedValue(user);
 
-        expect(await authService.userExists(username)).toBeTruthy();
+        expect(await authService.user(username)).toBeTruthy();
     });
 
     test('a token can be verified and contains id and role', async () => {
@@ -129,7 +137,7 @@ describe('AuthenticationService', () => {
         const lastName: string = 'Moore';
 
         const exUser = await authService.register(username, password, roleId, firstName, lastName);
-        mockedRepo.findOneBy.mockResolvedValue(exUser);
+        mockedUserRepo.findOneBy.mockResolvedValue(exUser);
 
         const {accessToken, refreshToken, user} = await authService.authenticate(username, password);
         const payload = await authService.verify(accessToken);
@@ -146,7 +154,7 @@ describe('AuthenticationService', () => {
         const lastName: string = 'Moore';
 
         const exUser = await authService.register(username, password, roleId, firstName, lastName);
-        mockedRepo.findOneBy.mockResolvedValue(exUser);
+        mockedUserRepo.findOneBy.mockResolvedValue(exUser);
 
         const {accessToken, refreshToken, user} = await authService.authenticate(username, password);
         const token = await authService.refresh(refreshToken);
@@ -174,12 +182,14 @@ describe('AuthenticationService', () => {
         const lastName: string = 'Moore';
 
         const exUser = await authService.register(username, password, roleId, firstName, lastName);
-        mockedRepo.findOneBy.mockResolvedValue(exUser);
+        mockedUserRepo.findOneBy.mockResolvedValue(exUser);
 
         const {accessToken, refreshToken, user} = await authService.authenticate(username, password);
-        mockedRepo.findOneBy.mockResolvedValue(null);
+        mockedUserRepo.findOneBy.mockResolvedValue(null);
 
         const newAccessToken = await authService.refresh(refreshToken);
         expect(newAccessToken).toBeNull();
     });
+
+    
 });

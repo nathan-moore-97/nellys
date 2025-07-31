@@ -101,8 +101,10 @@ export function AuthProvider(props: AuthProviderProps) {
     useEffect(() => {
         const initializeAuth = async () => {
             try {
-                if (!(await refreshToken())) {
-                    await logoutUser();
+                if (isAuthenticated) {
+                    if (!(await refreshToken())) {
+                        await logoutUser();
+                    }
                 }
             } catch (error) {
                 console.error('Auth initialization error: ', error);
