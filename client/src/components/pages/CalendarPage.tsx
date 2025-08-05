@@ -19,9 +19,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaMapMarkerAlt,
-  FaClock,
-  FaCalendarCheck,
-  FaCalendarDay
+  FaClock
 } from 'react-icons/fa';
 
 interface CalendarEvent {

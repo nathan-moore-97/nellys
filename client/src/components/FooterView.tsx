@@ -1,5 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
-import { FaFacebook, FaInstagram, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLink } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaEnvelope, FaMapMarkerAlt, FaLink } from "react-icons/fa";
 import AddressView from "./contact/AddressView";
 import HoursView from "./contact/HoursView";
 import PhoneEmailView from "./contact/PhoneEmail";
