@@ -1,9 +1,10 @@
 function HoursView() {
     return (
         <>
-            <p className="mb-2"><strong>Hours:</strong></p>
-            <p className="mb-1">Monday - Friday: 10am - 6pm</p>
-            <p className="mb-3">Saturday: 10am - 3pm</p>
+            <p className="mb-2"><strong>March Hours:</strong></p>
+            <p className="mb-1">Needlework Show: 10am - 4pm</p>
+            <p className="mb-1">Nelly's Café: 11:30am - 2pm</p>
+            <p className="mb-3"><i>Closed Tuesdays</i></p>
         </>
     );
 }

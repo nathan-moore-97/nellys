@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { User, UserRole } from "../entity/User";
 import logger from "../logging/Logger";
-import { TokenPayload } from "../core/auth/AuthenticationService";
+import { AuthenticationPayload, AuthenticationService } from "../core/auth/AuthenticationService";
 
 export function requireRoleLevel(minimumLevel: UserRole) {
     return (req: Request, res: Response, next: NextFunction) => {
-        const tokenPayload = (req as any).tokenPayload as TokenPayload;
+        const tokenPayload = (req as any).tokenPayload as AuthenticationPayload;
 
         logger.debug(JSON.stringify(tokenPayload));
 

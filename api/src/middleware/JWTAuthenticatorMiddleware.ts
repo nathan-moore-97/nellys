@@ -1,18 +1,18 @@
 import { Request, Response, NextFunction } from "express";
-import { AuthenticationService, TokenPayload } from "../core/auth/AuthenticationService";
+import { AuthenticationService, AuthenticationPayload } from "../core/auth/AuthenticationService";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 import logger from "../logging/Logger";
 import { TokenExpiredError } from "jsonwebtoken";
 
-const authService = new AuthenticationService(AppDataSource.getRepository(User), null);
+const authService = new AuthenticationService(AppDataSource.getRepository(User));
 
 export const authenticateJWT = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.token;
 
     try {
         if (token) {
-            const tokenPayload = await authService.verify(token) as TokenPayload;
+            const tokenPayload = await authService.verify(token) as AuthenticationPayload;
             
             if (!tokenPayload) {
                 logger.warn("JWT Authentication failed");

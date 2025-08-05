@@ -2,6 +2,7 @@ import { NewsletterSignupController } from "./controller/NewsletterSignupControl
 import { ApiHealthController } from "./controller/ApiHealthController";
 import { GalleryController } from "./controller/GalleryController";
 import { AuthenticationController } from "./controller/AuthenticationController";
+import { RegistrationController } from "./controller/RegistrationController";
 import rateLimit from "express-rate-limit";
 import { User, UserRole } from "./entity/User";
 import { AdminController } from "./controller/AdminController";
@@ -19,7 +20,7 @@ export const Routes = [
         protected: false,
     },
 
-    // Authentication, Admin and Management
+    // Admin and Management
     {
         method: "post",
         route: "/admin/users/role",
@@ -48,11 +49,11 @@ export const Routes = [
         requires: UserRole.ADMIN
     },
 
-    // Authentication
+    // Registration flow
     {
         method: "post",
-        route: "/auth/register/create",
-        controller: AuthenticationController,
+        route: "/register/create",
+        controller: RegistrationController,
         action: "createRegistrationToken",
         rateLimited: true,
         protected: true,
@@ -60,20 +61,22 @@ export const Routes = [
     },
     {
         method: "post",
-        route: "/auth/register/verify",
-        controller: AuthenticationController,
+        route: "/register/verify",
+        controller: RegistrationController,
         action: "verifyRegistrationToken",
         rateLimited: true,
         protected: false,
     },
     {
         method: "post",
-        route: "/auth/register",
-        controller: AuthenticationController,
+        route: "/register",
+        controller: RegistrationController,
         action: "register",
         rateLimited: true,
         protected: false,
     }, 
+
+    // Authentication
     {
         method: "post", 
         route: "/auth",

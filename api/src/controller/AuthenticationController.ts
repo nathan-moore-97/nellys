@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User"
-import { AuthenticationService, TokenPayload } from "../core/auth/AuthenticationService";
+import { AuthenticationService, AuthenticationPayload } from "../core/auth/AuthenticationService";
 import logger, { logAsync } from "../logging/Logger";
 import { GmailService } from "../email/EmailerService";
 import { EmailDirector } from "../email/EmailBuilder";
@@ -10,97 +10,7 @@ import { UserRegistration } from "../entity/UserRegistration";
 export class AuthenticationController {
     private emailer: GmailService = new GmailService();
     private authService: AuthenticationService =
-        new AuthenticationService(AppDataSource.getRepository(User), AppDataSource.getRepository(UserRegistration));
-    
-
-    async verifyRegistrationToken(request: Request, response: Response, next: NextFunction) {
-        try {
-            const { token } = request.body;
-
-            if (!token) {
-                response.sendStatus(403);
-                return;
-            }
-
-            if (!(await this.authService.verifyRegistrationToken(token))) {
-                response.sendStatus(403);
-                return;
-            }
-            
-            response.sendStatus(200);
-            return;
-
-        } catch(error) {
-            response.status(500).json({error: "Something went wrong. Please try again later."});
-            return;
-        }
-    }
-
-    async createRegistrationToken(request: Request, response: Response, next: NextFunction) {
-        
-        try {
-            const tokenPayload = (request as any).tokenPayload as TokenPayload;
-            const { email, roleId } = request.body;
-
-            const token = await this.authService.registrationToken(tokenPayload.userId, roleId);
-            this.emailer.send(email, EmailDirector.registrationEmail(token));
-
-            response.sendStatus(200);
-            return;
-
-        } catch {
-            response.status(500).json({error: "Something went wrong. Please try again later."});
-            return;
-        }
-    }
-    
-    async register(request: Request, response: Response, next: NextFunction) {
-        try {
-
-            const { data, token } = request.body;
-            const { username, password, firstName, lastName } = data;
-
-            const payload = await this.authService.verifyRegistrationToken(token);
-
-            if (!payload) {
-                response.status(403).json({
-                    error: "Invalid registration token"
-                });
-
-                return;
-            }
-
-            // Validate input
-            if (!username || !password) {
-                response.status(400).json({ 
-                    error: 'Username and password are required' 
-                });
-
-                return;
-            }
-
-            if (await this.authService.user(username)) {
-                response.status(400).json({
-                    error: "Username already exists"
-                });
-
-                return;
-            }
-
-            const newUser = await this.authService.register(username, password, payload.roleId, firstName, lastName);
-            this.authService.cleanupRegistrationToken(token);
-
-            response.status(201).json({
-                id: newUser.id,
-                username: newUser.username,
-                createdAt: newUser.createdAt,
-            });
-
-        } catch {
-            response.status(500).json({error: "Something went wrong. Please try again later."});
-            return;
-        }
-    }
+        new AuthenticationService(AppDataSource.getRepository(User));
 
     async authenticate(request: Request, response: Response, next: NextFunction) {
         const { username, password } = request.body;

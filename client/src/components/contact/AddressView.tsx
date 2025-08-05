@@ -1,13 +1,12 @@
 function AddressView() {
     return (
         <>
-        <div className="mb-4">
+        <div className="mb-2">
             <address>
-                <strong className="h5">
+                <>
                     9000 Richmond Hwy<br />
-                    Alexandria, VA<br />
-                    22309
-                </strong>
+                    Alexandria, VA 22309
+                </>
             </address>
         </div>
         </>

@@ -3,11 +3,14 @@ import { AuthenticationService } from "../core/auth/AuthenticationService";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 import { UserRegistration } from "../entity/UserRegistration";
+import { RegistrationService } from "../core/auth/RegistrationService";
 
 
 export class AdminController {
     private authService: AuthenticationService =
-        new AuthenticationService(AppDataSource.getRepository(User), AppDataSource.getRepository(UserRegistration));
+        new AuthenticationService(AppDataSource.getRepository(User));
+    private registrationService: RegistrationService = 
+        new RegistrationService(AppDataSource.getRepository(UserRegistration));
 
     async users(request: Request, response: Response, next: NextFunction) {
         try {
@@ -33,7 +36,7 @@ export class AdminController {
 
     async pendingUsers(request: Request, response: Response, next: NextFunction) {
         try {
-            const users = await this.authService.pendingUsers();
+            const users = await this.registrationService.pendingUsers();
             
             const retUsers = users.map(u => {
                 return {

@@ -1,4 +1,4 @@
-import { Col, Row, Card, Container } from "react-bootstrap";
+import { Col, Row, Card, Container, Button } from "react-bootstrap";
 import NewsletterView from "../newsletter/NewsletterView";
 import GoogleMapsView from "../contact/GoogleMapsView";
 import AddressView from "../contact/AddressView";
@@ -21,11 +21,9 @@ function ContactPage() {
                     <Row className="justify-content-center text-center">
                         <Col lg={10} xl={8}>
                             <div className={isVisible ? 'animate-in' : ''}>
-                                <h1 className="mb-4">Visit Nelly's Needlers</h1>
+                                <h1 className="mb-4">Keep in Touch!</h1>
                                 <p>
-                                    Located in the heart of Alexandria, we're your premier destination for 
-                                    needlework supplies, expert guidance, and a warm community of crafters. 
-                                    Come discover the art of beautiful stitching!
+                                    Have a question? Want to learn more?
                                 </p>
                             </div>
                         </Col>
@@ -41,19 +39,12 @@ function ContactPage() {
                         <Card className={`h-100 ${isVisible ? 'animate-in-left' : ''}`}>
                             <Card.Body className="p-4 p-xl-5">
                                 <div className="mb-4">
-                                    <div className="mb-3">
-                                        <i className="fas fa-map-marker-alt"></i>
-                                    </div>
-                                    <h3>Visit Our Studio</h3>
+                                    <i><h3>Nelly's News</h3></i>
                                     <p className="text-muted">
-                                        Find us in beautiful Alexandria, Virginia
+                                        Our monthly newsletter is the best way to stay <br/>up-to-date on events, projects, and volunteer opportunities!
                                     </p>
                                 </div>
-                                
-                                <div className="mb-4">
-                                    <AddressView />
-                                </div>
-                                
+ 
                                 <div></div>
                                 
                                 <div>
@@ -69,17 +60,24 @@ function ContactPage() {
                     {/* Map Card */}
                     <Col lg={5} md={6}>
                         <Card className={`h-100 ${isVisible ? 'animate-in-right' : ''}`}>
-                            <Card.Body className="p-0">
-                                <div className="p-4">
-                                    <div className="mb-2">
-                                        <i className="fas fa-map"></i>
-                                    </div>
-                                    <h3 className="mb-1">Find Us Here</h3>
-                                    <p className="text-muted mb-0">
-                                        Convenient location with parking available
+                            <Card.Body className="p-4 p-xl-5">
+                                <div className="p-0">
+                                    <h3 className="mb-4">Woodlawn & <br/>Pope-Leighey House</h3>
+                               
+                                <div className="mb-4">
+                                    <AddressView />
+                                </div>
+                                
+                                    <p className="text-muted mb-3">
+                                        Visit their website for hours and tour availabilty!
                                     </p>
                                 </div>
-                                <div>
+                                <div className="mb-3">
+                                    <Button onClick={() => {window.open("https://www.woodlawnpopeleighey.org/")}}>
+                                       Woodlawn & Pope-Leighey House
+                                    </Button>         
+                                </div>
+                                <div className="mb-0">
                                     <GoogleMapsView />
                                 </div>
                             </Card.Body>
@@ -92,9 +90,10 @@ function ContactPage() {
                     <Col>
                         <div className={isVisible ? 'animate-in-up' : ''}>
                             <div className="text-center mb-5">
-                                <h2>Why Choose Nelly's Needlers?</h2>
+                                <h2>Join Nelly's Needlers</h2>
                                 <p className="text-muted">
-                                    More than just a needlework shop – we're your crafting community
+                                    Whether you're an avid needleworker, an advocate for historic preservation, or simply <br/>
+                                    looking for a worthwhile place to volunteer your time, there's a place for you at Nelly's Needlers.
                                 </p>
                             </div>
                             
@@ -104,10 +103,10 @@ function ContactPage() {
                                         <div className="mb-3">
                                             <i className="fas fa-scissors"></i>
                                         </div>
-                                        <h4>Expert Guidance</h4>
+                                        <h4>Education</h4>
                                         <p className="text-muted">
-                                            Our experienced staff provides personalized advice and 
-                                            techniques for crafters of all skill levels.
+                                            With our collective knowledge of a wide variety of techniques, we are able to offer a broad range
+                                            of classes for those just starting their needlework journey to those looking to expand their skill set.
                                         </p>
                                     </div>
                                 </Col>
@@ -117,9 +116,9 @@ function ContactPage() {
                                         <div className="mb-3">
                                             <i className="fas fa-users"></i>
                                         </div>
-                                        <h4>Welcoming Community</h4>
+                                        <h4>Community</h4>
                                         <p className="text-muted">
-                                            Join our friendly community of needlework enthusiasts 
+                                            Join our welcoming group of needlework enthusiasts 
                                             and make lasting friendships.
                                         </p>
                                     </div>
@@ -130,10 +129,10 @@ function ContactPage() {
                                         <div className="mb-3">
                                             <i className="fas fa-star"></i>
                                         </div>
-                                        <h4>Quality Supplies</h4>
+                                        <h4>Service</h4>
                                         <p className="text-muted">
-                                            Premium threads, fabrics, and tools from trusted 
-                                            brands for your finest projects.
+                                            As the core of our organization, our projects and events aim to support the preservation of Woodlawn - 
+                                            from stitching pieces for the Woodlawn gift shop to volunteering in the Nelly's Café.
                                         </p>
                                     </div>
                                 </Col>

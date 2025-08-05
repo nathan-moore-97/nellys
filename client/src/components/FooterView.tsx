@@ -1,5 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
-import { FaFacebook, FaInstagram, FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLink } from "react-icons/fa";
 import AddressView from "./contact/AddressView";
 import HoursView from "./contact/HoursView";
 import PhoneEmailView from "./contact/PhoneEmail";
@@ -13,21 +13,21 @@ function FooterView() {
                         <div className="d-flex justify-content-center mb-3">
                             <div className="d-flex align-items-center">
                                 <FaMapMarkerAlt className="me-2 fs-4" />
-                                <h4 className="mb-0">Visit Us</h4>
+                                <h4 className="mb-0">Woodlawn & Pope-Leighey House</h4>
                             </div>
                         </div>
                         <AddressView />
+                        <HoursView />
                     </Col>
                     
                     <Col xs={12} md={4}>
                         <div className="d-flex justify-content-center mb-3">
                             <div className="d-flex align-items-center">
-                                <FaPhone className="me-2 fs-4" />
-                                <h4 className="mb-0">Hours & Contact</h4>
+                                <FaEnvelope className="me-2 fs-4" />
+                                <h4 className="mb-0">Contact</h4>
                             </div>
                         </div>
                         <div>
-                            <HoursView />
                             <PhoneEmailView />
                         </div>
                     </Col>
@@ -35,11 +35,11 @@ function FooterView() {
                     <Col xs={12} md={4}>
                         <div className="d-flex justify-content-center mb-3">
                             <div className="d-flex align-items-center">
-                                <FaEnvelope className="me-2 fs-4" />
+                                <FaLink className="me-2 fs-4" />
                                 <h4 className="mb-0">Connect With Us</h4>
                             </div>
                         </div>
-                        <p className="mb-3">Follow us on social media for updates and promotions!</p>
+                        <p className="mb-3">Follow us on social media for updates and events!</p>
                         <div className="d-flex justify-content-center mb-3">
                             <div className="d-flex align-items-center gap-3">
                                 <a href="https://www.facebook.com/nellysneedlers/" className="text-white"><FaFacebook size={24} /></a>
