@@ -35,6 +35,12 @@ export class AuthenticationService {
         return await this.userRepo.findOneBy({ username: username });
     }
 
+    async updateUserRole(userId: number, roleId: number) {
+        const user = await this.userRepo.findOneBy({ id: userId });
+        user.roleId = roleId;
+        return await this.userRepo.save(user);
+    }
+
     async register(username: string, password: string, roleId: UserRole,
             firstName: string, lastName: string): Promise<User> {
         const user = new User();

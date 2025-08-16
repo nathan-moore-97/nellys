@@ -2,6 +2,7 @@ export interface StoredUser {
     firstName: string,
     lastName: string,
     roleId: number,
+    username: string,
 }
 
 // Type guard for StoredUser
@@ -20,6 +21,10 @@ export function isStoredUser(data: unknown): data is StoredUser {
     }
 
     if (typeof user.roleId !== 'number' || !Number.isInteger(user.roleId) || user.roleId <= 0) {
+        return false;
+    }
+
+    if (typeof user.username !== 'string' || user.username.trim().length === 0) {
         return false;
     }
 

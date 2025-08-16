@@ -4,16 +4,22 @@ import { useState, useMemo } from "react";
 interface DataTableProps<T extends Record<string, any>> {
     data: T[];
     enumMap?: {
-        [K in keyof T]?: any; // Enum object for the property
+        [K in keyof T]?: any;
     };
+    onEdit?: (item: T) => void;
+    editButtonText?: string;
 }
 
-const DataTable = <T extends Record<string, any>>({ data, enumMap = {} }: DataTableProps<T>) => {
+const DataTable = <T extends Record<string, any>>({ 
+    data, 
+    enumMap = {}, 
+    onEdit,
+    editButtonText = "Edit"
+}: DataTableProps<T>) => {
     const [sortConfig, setSortConfig] = useState<{
         key: keyof T;
         direction: 'ascending' | 'descending';
     } | null>(null);
-
 
     const requestSort = (key: keyof T) => {
         let direction: 'ascending' | 'descending' = 'ascending';
@@ -32,7 +38,6 @@ const DataTable = <T extends Record<string, any>>({ data, enumMap = {} }: DataTa
         if (!sortConfig) return data;
 
         return [...data].sort((a, b) => {
-            // Handle enum values by comparing their display names if they're enums
             const aValue = enumMap[sortConfig.key] 
                 ? getEnumName(enumMap[sortConfig.key], a[sortConfig.key])
                 : a[sortConfig.key];
@@ -87,16 +92,18 @@ const DataTable = <T extends Record<string, any>>({ data, enumMap = {} }: DataTa
                             </Button>
                         </th>
                     ))}
+                    {onEdit && <th>Actions</th>}
                 </tr>
             </thead>
             <tbody>
                 {sortedData.map((item, rowIndex) => (
                     <tr key={rowIndex}>
                         {columns.map((column) => (
-                            <td key={column.toString()}>
-                                {renderCellValue(item[column], column)}
-                            </td>
+                            <td key={column.toString()}>{renderCellValue(item[column], column)}</td>
                         ))}
+                        {onEdit && (
+                            <td><Button variant="primary" size="sm" onClick={() => onEdit(item)}>{editButtonText}</Button></td>
+                        )}
                     </tr>
                 ))}
             </tbody>

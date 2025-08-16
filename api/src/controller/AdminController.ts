@@ -4,6 +4,7 @@ import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 import { UserRegistration } from "../entity/UserRegistration";
 import { RegistrationService } from "../core/auth/RegistrationService";
+import logger from "../logging/Logger";
 
 
 export class AdminController {
@@ -28,6 +29,32 @@ export class AdminController {
 
 
             response.status(200).json(retUsers)
+        } catch {
+            response.status(500).json({error: "Something went wrong. Please try again later."});
+            return;
+        }
+    }
+
+    async setRole(request: Request, response: Response, next: NextFunction) {
+        try {
+
+            const {userId, roleId, adminUsername, reason} = request.body;
+
+            if (!userId || !roleId) {
+                response.status(403).json({error: "User data not provided"});
+                return;
+            }
+
+            if (!adminUsername || !reason) {
+                response.status(403).json({error: "Audit data not provided"});
+                return;
+            }
+
+            // TODO AUDIT
+            logger.debug(`Update user role: User=${userId} Role=${roleId} Admin=${adminUsername} Reason=${reason}`);
+
+            this.authService.updateUserRole(userId, roleId);
+            response.status(200).end();
         } catch {
             response.status(500).json({error: "Something went wrong. Please try again later."});
             return;

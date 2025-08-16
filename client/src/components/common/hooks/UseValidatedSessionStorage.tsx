@@ -5,7 +5,7 @@ export function useValidatedSessionStorage<T>(
     key: string,
     initialValue: T,
     validator: (data: unknown) => data is T
-): [T, (value: T | ((val: T) => T)) => void] {
+): [T, (value: T | ((val: T) => T)) => void, () => void] {
     // State initialization with validation
     const [storedValue, setStoredValue] = useState<T>(() => {
         try {
@@ -36,5 +36,13 @@ export function useValidatedSessionStorage<T>(
         }
     };
 
-    return [storedValue, setValue];
+    const clearValue = () => {
+        try {
+            window.sessionStorage.removeItem(key);
+        } catch (error) {
+            console.error("Error removing the session storage data")
+        }
+    };
+
+    return [storedValue, setValue, clearValue];
 }

@@ -8,6 +8,7 @@ export interface AuthContextType {
     isLoading: boolean;
     // userId: number;
     userRole: UserRole;
+    username: string;
     firstName: string;
     lastName: string;
     login: (username: string, password: string) => Promise<boolean>;
@@ -26,7 +27,7 @@ export function AuthProvider(props: AuthProviderProps) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setIsLoading] = useState(true);
     
-    const [userData, setUserData] = useValidatedSessionStorage<StoredUser | null>(
+    const [userData, setUserData, clearUserData] = useValidatedSessionStorage<StoredUser | null>(
         'user_data',
         null,
         (data): data is StoredUser | null => 
@@ -69,7 +70,8 @@ export function AuthProvider(props: AuthProviderProps) {
             setUserData({
                 firstName: firstName,
                 lastName: lastName,
-                roleId: roleId
+                username: username,
+                roleId: roleId,
             });
 
             setIsAuthenticated(true);
@@ -84,11 +86,15 @@ export function AuthProvider(props: AuthProviderProps) {
     }
 
     const logoutUser = async () => {
+        console.log("Logout called")
         try {
             await fetch(`${API_URL}/auth/logout`, {
                 method: 'POST',
                 credentials: 'include',
             });
+
+            // Clear user data
+            clearUserData();
             
         } catch (error) {
             console.error('Logout error: ', error);
@@ -101,8 +107,9 @@ export function AuthProvider(props: AuthProviderProps) {
     useEffect(() => {
         const initializeAuth = async () => {
             try {
-                if (isAuthenticated) {
+                if (userData) {
                     if (!(await refreshToken())) {
+                        console.log("Invalid refresh token?")
                         await logoutUser();
                     }
                 }
@@ -133,6 +140,7 @@ export function AuthProvider(props: AuthProviderProps) {
         isLoading: loading,
         // userId: userId,
         userRole: userData?.roleId,
+        username: userData?.username,
         firstName: userData?.firstName,
         lastName: userData?.lastName,
         login: loginUser,

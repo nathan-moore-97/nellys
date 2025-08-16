@@ -42,8 +42,8 @@ function FooterView() {
                         <p className="mb-3">Follow us on social media for updates and events!</p>
                         <div className="d-flex justify-content-center mb-3">
                             <div className="d-flex align-items-center gap-3">
-                                <a href="https://www.facebook.com/nellysneedlers/" className="text-white"><FaFacebook size={24} /></a>
-                                <a href="https://www.instagram.com/nellys.needlers/" className="text-white"><FaInstagram size={24} /></a>
+                                <a href="https://www.facebook.com/nellysneedlers/" target="_blank" className="text-white"><FaFacebook size={24} /></a>
+                                <a href="https://www.instagram.com/nellys.needlers/" target="_blank" className="text-white"><FaInstagram size={24} /></a>
                             </div>
                         </div>
                     </Col>

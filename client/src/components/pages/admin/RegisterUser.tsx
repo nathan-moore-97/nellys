@@ -57,7 +57,7 @@ function RegisterUser() {
     }, [searchParams]);
 
     const verifyToken = async(tokenParam: string) => {
-        const response = await fetch(`${API_URL}/auth/register/verify`, {
+        const response = await fetch(`${API_URL}/register/verify`, {
             method: "POST",
             headers: {
                 'Content-type': 'application/json',
@@ -70,7 +70,7 @@ function RegisterUser() {
     }
 
     const registerNewUser = async() => {
-        const response = await fetch(`${API_URL}/auth/register`, {
+        const response = await fetch(`${API_URL}/register`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
