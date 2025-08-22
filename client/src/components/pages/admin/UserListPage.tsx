@@ -20,6 +20,11 @@ interface RoleUpdateForm {
     reason: string;
 }
 
+interface RegisterUserForm {
+    email: string;
+    roleId: number;
+}
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 async function getAllUsers(): Promise<UserEntry[]> {
@@ -33,7 +38,7 @@ async function getAllUsers(): Promise<UserEntry[]> {
     return await response.json() as UserEntry[];
 }
 
-async function updateUserRole(formData: RoleUpdateForm): Promise<void> {
+async function updateUserRole(roleUpdateFormData: RoleUpdateForm): Promise<void> {
     await fetch(`${API_URL}/admin/users/role`, {
         method: 'POST',
         credentials: 'include',
@@ -41,10 +46,24 @@ async function updateUserRole(formData: RoleUpdateForm): Promise<void> {
             'Content-type': 'application/json',
         },
         body: JSON.stringify({
-            userId: formData.userId,
-            adminUsername: formData.username,
-            roleId: formData.newRole,
-            reason: formData.reason.trim() || "No reason provided"
+            userId: roleUpdateFormData.userId,
+            adminUsername: roleUpdateFormData.username,
+            roleId: roleUpdateFormData.newRole,
+            reason: roleUpdateFormData.reason.trim() || "No reason provided"
+        }),
+    });
+}
+
+async function registerUser(roleUpdateFormData: RegisterUserForm): Promise<void> {
+    await fetch(`${API_URL}/register/create`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: roleUpdateFormData.email,
+            roleId: roleUpdateFormData.roleId
         }),
     });
 }
@@ -56,13 +75,20 @@ function UserListPage() {
     const { isAuthenticated, username } = useAuth() as AuthContextType;
 
     // Modal and Form state
-    const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState<RoleUpdateForm>({
+    const [showRoleUpdateModal, setShowRoleUpdateModal] = useState(false);
+    const [roleUpdateFormData, setRoleUpdateFormData] = useState<RoleUpdateForm>({
         userId: 0,
         username: username,
         newRole: UserRole.NONE,
         reason: ""
     });
+
+    const [showRegisterUserModal, setShowRegisterUserModal] = useState(false);
+    const [registerUserFormData, setRegisterUserFormData] = useState<RegisterUserForm>({
+        email: "",
+        roleId: UserRole.NONE,
+    });
+
     const [isUpdating, setIsUpdating] = useState(false);
     const [updateError, setUpdateError] = useState<string | null>(null);
 
@@ -83,26 +109,32 @@ function UserListPage() {
     };
 
     const handleEditClick = (user: UserEntry) => {
-        setFormData({
+        setRoleUpdateFormData({
             userId: user.id,
             newRole: user.roleId,
             username: username,
             reason: ""
         });
-        setShowModal(true);
+        setShowRoleUpdateModal(true);
         setUpdateError(null);
     };
 
-    const handleSubmit = async (e: FormEvent) => {
+    const handleRegisterUserSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        await registerUser(registerUserFormData);
+        setShowRegisterUserModal(false);
+    };
+
+    const handleUpdateRoleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setIsUpdating(true);
         
         try {
-            await updateUserRole(formData);
+            await updateUserRole(roleUpdateFormData);
             setUsers(users.map(user => 
-                user.id === formData.userId ? { ...user, roleId: formData.newRole } : user
+                user.id === roleUpdateFormData.userId ? { ...user, roleId: roleUpdateFormData.newRole } : user
             ));
-            setShowModal(false);
+            setShowRoleUpdateModal(false);
         } catch (err) {
             if (err instanceof Error) {
                 setUpdateError(err.message);
@@ -114,14 +146,22 @@ function UserListPage() {
         }
     };
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleRegisterUserChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
+        setRegisterUserFormData(prev => ({
+            ...prev,
+            [name]: name === "newRole" ? Number(value) : value
+        }));
+    }
+
+    const handleRoleUpdateChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setRoleUpdateFormData(prev => ({
             ...prev,
             [name]: name === "newRole" ? Number(value) : value
         }));
     };
-
+    
     useEffect(() => {
         if (isAuthenticated) {
             fetchDataSource();
@@ -147,11 +187,20 @@ function UserListPage() {
         );
     }
 
-    const selectedUser = users.find(user => user.id === formData.userId);
+    const selectedUser = users.find(user => user.id === roleUpdateFormData.userId);
 
     return (
         <>
-            <h2 className="mb-4">Users</h2>
+            <Container>
+                <div className="d-flex justify-content-between align-items-center">
+                    <h2>Users</h2>
+                    <div>
+                        <ProtectedComponent requires={UserRole.ADMIN}>
+                            <button className="btn btn-primary" onClick={() => setShowRegisterUserModal(true)}>Register User</button>
+                        </ProtectedComponent>
+                    </div>
+                </div>
+            </Container>
             <Container className="mt-4">
                 <ProtectedComponent requires={UserRole.ADMIN}>
                     <DataTable<UserEntry> 
@@ -165,12 +214,55 @@ function UserListPage() {
                 </ProtectedComponent>
             </Container>
 
+            {/* New User Registration Modal */}
+            <Modal show={showRegisterUserModal} onHide={() => setShowRegisterUserModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Register New User</Modal.Title>
+                </Modal.Header>
+                <Form onSubmit={handleRegisterUserSubmit}>
+                    <Modal.Body>
+                        
+                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                            <Form.Label>Email Address</Form.Label>
+                            <Form.Control type="email" value={registerUserFormData.email} onChange={handleRegisterUserChange} 
+                                name="email" placeholder="jdoe@email.com" required />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>New Role</Form.Label>
+                            <Form.Select
+                                name="roleId"
+                                value={registerUserFormData.roleId}
+                                onChange={handleRegisterUserChange}
+                            >
+                                {Object.entries(UserRole)
+                                    .filter(([key]) => isNaN(Number(key)))
+                                    .map(([key, value]) => (
+                                        <option key={value} value={value}>
+                                            {key}
+                                        </option>
+                                    ))}
+                            </Form.Select>
+                        </Form.Group>
+                        
+                        
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowRegisterUserModal(false)}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+
             {/* Role Update Modal */}
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal show={showRoleUpdateModal} onHide={() => setShowRoleUpdateModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Update User Role</Modal.Title>
                 </Modal.Header>
-                <Form onSubmit={handleSubmit}>
+                <Form onSubmit={handleUpdateRoleSubmit}>
                     <Modal.Body>
                         {selectedUser && (
                             <>
@@ -186,8 +278,8 @@ function UserListPage() {
                                     <Form.Label>New Role</Form.Label>
                                     <Form.Select
                                         name="newRole"
-                                        value={formData.newRole}
-                                        onChange={handleChange}
+                                        value={roleUpdateFormData.newRole}
+                                        onChange={handleRoleUpdateChange}
                                     >
                                         {Object.entries(UserRole)
                                             .filter(([key]) => isNaN(Number(key)))
@@ -205,8 +297,8 @@ function UserListPage() {
                                         name="reason"
                                         rows={3}
                                         placeholder="Explain why you're changing this role (required)"
-                                        value={formData.reason}
-                                        onChange={handleChange}
+                                        value={roleUpdateFormData.reason}
+                                        onChange={handleRoleUpdateChange}
                                         required
                                     />
                                 </Form.Group>
@@ -219,13 +311,13 @@ function UserListPage() {
                         )}
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        <Button variant="secondary" onClick={() => setShowRoleUpdateModal(false)}>
                             Cancel
                         </Button>
                         <Button 
                             variant="primary" 
                             type="submit"
-                            disabled={isUpdating || !formData.reason.trim()}
+                            disabled={isUpdating || !roleUpdateFormData.reason.trim()}
                         >
                             {isUpdating ? (
                                 <>
