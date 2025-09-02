@@ -207,7 +207,7 @@ function GalleryView() {
                 className="gallery-carousel" 
                 centered
             >
-                <Modal.Body className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px' }}>
+                <Modal.Body className="d-flex justify-content-center align-items-center">
                     {isLoading ? (
                         <Spinner animation="border" role="status">
                             <span className="visually-hidden">Loading...</span>

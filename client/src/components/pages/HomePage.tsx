@@ -1,4 +1,4 @@
-import { Container, Row, Col, Card, Button, Badge } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Badge, Carousel } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 function HomePage() {
@@ -7,6 +7,56 @@ function HomePage() {
 
     return (
         <Container className="p-0">
+            <Carousel className="mb-5" fade>
+                <Carousel.Item>
+                    <div 
+                        className="d-block w-100 carousel-image"
+                        style={{
+                            height: "500px",
+                            backgroundImage: "url('https://scontent-iad3-2.xx.fbcdn.net/v/t39.30808-6/480664745_937732748532937_9113574964026211138_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_ohc=ODyZGGqEujUQ7kNvwEWL0Ma&_nc_oc=AdkCobP9DHVxAFL86xM5qlSF_SP0VnqRBxleh_P6GfPBGAa0MKsjA-mEFet2COelLGKsY8z6AgJ_3CFMOQKegzxT&_nc_zt=23&_nc_ht=scontent-iad3-2.xx&_nc_gid=y6Xcl_qsl8bvuOSZlW--OA&oh=00_AfXOz1OdJgM_gD7ScgVkea9Cdj4g8C0_Y6QKNS0sgNWUzg&oe=68AE7863')",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center"
+                        }}
+                    />
+                    <Carousel.Caption>
+                        <h3>Celebrating 50 Years</h3>
+                        <p>Join us in preserving historic Woodlawn and the needle arts.</p>
+                        <Button variant="light">Learn More</Button>
+                    </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                    <div 
+                        className="d-block w-100 carousel-image"
+                        style={{
+                            height: "500px",
+                            backgroundImage: "url('https://scontent-iad3-2.xx.fbcdn.net/v/t39.30808-6/469902805_3971857769763427_3527994902325101920_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_ohc=qXIM42FGTKQQ7kNvwFjuAg1&_nc_oc=Adnnx7syAN66yBmX5KfLBaz3cz_2On_mBGiRC-B5hMVRlLiaHA3yv7WvzALKAex7ycmv0mxlTHtPmt_oOPVXexW_&_nc_zt=23&_nc_ht=scontent-iad3-2.xx&_nc_gid=xGj0XnhFM6hnbPtZS9rROg&oh=00_AfWjl0Sm9RTa2sezmBuxdu-X_4QEbMcTaY27WowaWT9BWg&oe=68AE7D69')",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center"
+                        }}
+                    />
+                    <Carousel.Caption>
+                        <h3>Annual Needlework Show</h3>
+                        <p>March 2026 - Submit your pieces starting in January.</p>
+                        <Button variant="light">Exhibition Details</Button>
+                    </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                    <div 
+                        className="d-block w-100 carousel-image"
+                        style={{
+                            height: "500px",
+                            backgroundImage: "url('https://scontent-iad3-1.xx.fbcdn.net/v/t39.30808-6/492346624_1108702674617838_2719628395315176142_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_ohc=rXEih3L1U5YQ7kNvwFABNvt&_nc_oc=Adk7TUbux9IBAyipyr27bXIDgbLXXMvFtavLdnGdbvihgYQAt1bQ5taoi7to8ZwusiSbZ5E0IYAknZnzMvD90uRm&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&_nc_gid=PniGOBrstAK-hHAAac9BrQ&oh=00_AfUixsZZbsxorpYIeeOvopmUa7coIX0uAyoSfeJrqRD50Q&oe=68AE87C4')",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center"
+                        }}
+                    />
+                    <Carousel.Caption>
+                        <h3>New Classes Available</h3>
+                        <p>Learn traditional techniques from experienced instructors.</p>
+                        <Button variant="light">View Schedule</Button>
+                    </Carousel.Caption>
+                </Carousel.Item>
+            </Carousel>
             {/* Hero Section */}
             <Row className="mb-5">
                 <Col>
