@@ -86,5 +86,6 @@ cdk.out
 *.Identifier
 
 /photos/
+/photosContent/
 
 */coverage/
