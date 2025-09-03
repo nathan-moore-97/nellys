@@ -13,7 +13,7 @@ function HomePage() {
                         className="d-block w-100 carousel-image"
                         style={{
                             height: "500px",
-                            backgroundImage: "url('https://scontent-iad3-2.xx.fbcdn.net/v/t39.30808-6/480664745_937732748532937_9113574964026211138_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_ohc=ODyZGGqEujUQ7kNvwEWL0Ma&_nc_oc=AdkCobP9DHVxAFL86xM5qlSF_SP0VnqRBxleh_P6GfPBGAa0MKsjA-mEFet2COelLGKsY8z6AgJ_3CFMOQKegzxT&_nc_zt=23&_nc_ht=scontent-iad3-2.xx&_nc_gid=y6Xcl_qsl8bvuOSZlW--OA&oh=00_AfXOz1OdJgM_gD7ScgVkea9Cdj4g8C0_Y6QKNS0sgNWUzg&oe=68AE7863')",
+                            backgroundImage: "url('https://nellysdev-content-375033338686.s3.amazonaws.com/469902805_3971857769763427_3527994902325101920_n.jpg')",
                             backgroundSize: "cover",
                             backgroundPosition: "center"
                         }}
@@ -29,7 +29,7 @@ function HomePage() {
                         className="d-block w-100 carousel-image"
                         style={{
                             height: "500px",
-                            backgroundImage: "url('https://scontent-iad3-2.xx.fbcdn.net/v/t39.30808-6/469902805_3971857769763427_3527994902325101920_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_ohc=qXIM42FGTKQQ7kNvwFjuAg1&_nc_oc=Adnnx7syAN66yBmX5KfLBaz3cz_2On_mBGiRC-B5hMVRlLiaHA3yv7WvzALKAex7ycmv0mxlTHtPmt_oOPVXexW_&_nc_zt=23&_nc_ht=scontent-iad3-2.xx&_nc_gid=xGj0XnhFM6hnbPtZS9rROg&oh=00_AfWjl0Sm9RTa2sezmBuxdu-X_4QEbMcTaY27WowaWT9BWg&oe=68AE7D69')",
+                            backgroundImage: "url('https://nellysdev-content-375033338686.s3.amazonaws.com/480664745_937732748532937_9113574964026211138_n.jpg')",
                             backgroundSize: "cover",
                             backgroundPosition: "center"
                         }}
@@ -45,7 +45,7 @@ function HomePage() {
                         className="d-block w-100 carousel-image"
                         style={{
                             height: "500px",
-                            backgroundImage: "url('https://scontent-iad3-1.xx.fbcdn.net/v/t39.30808-6/492346624_1108702674617838_2719628395315176142_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_ohc=rXEih3L1U5YQ7kNvwFABNvt&_nc_oc=Adk7TUbux9IBAyipyr27bXIDgbLXXMvFtavLdnGdbvihgYQAt1bQ5taoi7to8ZwusiSbZ5E0IYAknZnzMvD90uRm&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&_nc_gid=PniGOBrstAK-hHAAac9BrQ&oh=00_AfUixsZZbsxorpYIeeOvopmUa7coIX0uAyoSfeJrqRD50Q&oe=68AE87C4')",
+                            backgroundImage: "url('https://nellysdev-content-375033338686.s3.amazonaws.com/492346624_1108702674617838_2719628395315176142_n.jpg')",
                             backgroundSize: "cover",
                             backgroundPosition: "center"
                         }}

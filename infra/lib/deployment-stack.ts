@@ -5,6 +5,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 import * as dotenv from 'dotenv';
 
@@ -12,7 +13,8 @@ export class DeploymentStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
-        const createBucket = this.node.tryGetContext('createBucket') || false;
+        const createGalleryBucket = this.node.tryGetContext('createGalleryBucket') || false;
+        const createContentBucket = this.node.tryGetContext('createContentBucket') || false;
 
         // VPC
         const vpc = new ec2.Vpc(this, 'NellysDevVPC', {
@@ -72,21 +74,54 @@ export class DeploymentStack extends cdk.Stack {
 
         let galleryBucket;
 
-        if (createBucket) {
+        if (createGalleryBucket) {
             galleryBucket = new s3.Bucket(this, 'GalleryBucket', {
                 bucketName: `nellysdev-gallery-${this.account}`,
                 blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
                 encryption: s3.BucketEncryption.S3_MANAGED,
-                // Delete everything in the gallery and destroy the bucket.
-                // This is mainly to keep costs low in development while
-                // I am not intending to leave the infrastructure running
-                // for any length of time. 
-                // autoDeleteObjects: true,
-                // removalPolicy: cdk.RemovalPolicy.DESTROY,
                 removalPolicy: cdk.RemovalPolicy.RETAIN,
             });
         } else {
             galleryBucket = s3.Bucket.fromBucketName(this, 'GalleryBucket', `nellysdev-gallery-${this.account}`);
+        }
+ 
+        galleryBucket.grantRead(backendInstance.role!);
+
+        let contentBucket;
+
+        if (createContentBucket) {
+            contentBucket = new s3.Bucket(this, 'ContentBucket', {
+                bucketName: `nellysdev-content-${this.account}`,
+                blockPublicAccess: new s3.BlockPublicAccess({
+                    blockPublicAcls: false,
+                    blockPublicPolicy: false,
+                    ignorePublicAcls: false,
+                    restrictPublicBuckets: false,
+                }),
+                publicReadAccess: true,
+                encryption: s3.BucketEncryption.S3_MANAGED,
+                removalPolicy: cdk.RemovalPolicy.RETAIN,
+            });
+
+            // Uncomment once I get all the domain name crap sorted out. 
+            // contentBucket.addToResourcePolicy(new iam.PolicyStatement({
+            //     effect: iam.Effect.ALLOW,
+            //     principals: [new iam.AnyPrincipal()],
+            //     actions: ['s3:GetObject'],
+            //     resources: [contentBucket.arnForObjects('*')],
+            //     conditions: {
+            //         // Optional: Restrict to specific referrers for security
+            //         'StringLike': {
+            //         'aws:Referer': [
+            //             'https://nellysdev.org/*',
+            //             'http://localhost:*'
+            //         ]
+            //         }
+            //     }
+            // }));
+
+        } else {
+            contentBucket = s3.Bucket.fromBucketName(this, 'ContentBucket', `nellysdev-content-${this.account}`);
         }
 
         galleryBucket.grantRead(backendInstance.role!);
@@ -174,8 +209,12 @@ export class DeploymentStack extends cdk.Stack {
             value: `http://${backendInstance.instancePublicDnsName} (${backendInstance.instancePublicIp})`,
         });
 
-        new cdk.CfnOutput(this, "Bucket", {
+        new cdk.CfnOutput(this, "GalleryBucketMsg", {
             value: galleryBucket.bucketName,
+        });
+
+        new cdk.CfnOutput(this, "ContentBucketMsg", {
+            value: contentBucket.bucketName,
         });
     }
 }
