@@ -6,6 +6,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as dotenv from 'dotenv';
 
 export class DeploymentStack extends cdk.Stack {
@@ -88,10 +89,9 @@ export class DeploymentStack extends cdk.Stack {
 
         let contentBucket;
 
-        if (createContentBucket) {
+       if (createContentBucket) {
             contentBucket = new s3.Bucket(this, 'ContentBucket', {
                 bucketName: `nellysdev-content-${this.account}`,
-                // REMOVE blockPublicAccess entirely or configure it properly:
                 blockPublicAccess: new s3.BlockPublicAccess({
                     blockPublicAcls: false,
                     blockPublicPolicy: false,
@@ -102,10 +102,28 @@ export class DeploymentStack extends cdk.Stack {
                 encryption: s3.BucketEncryption.S3_MANAGED,
                 removalPolicy: cdk.RemovalPolicy.RETAIN,
             });
-        } else {
-            contentBucket = s3.Bucket.fromBucketName(this, 'ContentBucket', `nellysdev-content-${this.account}`);
-        }
 
+            // Force add the bucket policy
+            contentBucket.addToResourcePolicy(new iam.PolicyStatement({
+                sid: 'PublicReadGetObject',
+                effect: iam.Effect.ALLOW,
+                principals: [new iam.AnyPrincipal()],
+                actions: ['s3:GetObject'],
+                resources: [contentBucket.arnForObjects('*')],
+            }));
+        } else {
+            // Import existing bucket and add policy
+            contentBucket = s3.Bucket.fromBucketName(this, 'ContentBucket', `nellysdev-content-${this.account}`);
+            
+            // For existing buckets, you might need to manually apply the policy
+            contentBucket.addToResourcePolicy(new iam.PolicyStatement({
+                sid: 'PublicReadGetObject',
+                effect: iam.Effect.ALLOW,
+                principals: [new iam.AnyPrincipal()],
+                actions: ['s3:GetObject'],
+                resources: [`arn:aws:s3:::nellysdev-content-${this.account}/*`],
+            }));
+        }
 
         // DNS - Corrected hosted zone creation
         const hostedZone = new route53.PublicHostedZone(this, 'HostedZone', {
@@ -189,7 +207,7 @@ export class DeploymentStack extends cdk.Stack {
         new cdk.CfnOutput(this, "Backend", {
             value: `http://${backendInstance.instancePublicDnsName} (${backendInstance.instancePublicIp})`,
         });
-
+        
         new cdk.CfnOutput(this, "GalleryBucketMsg", {
             value: galleryBucket.bucketName,
         });
