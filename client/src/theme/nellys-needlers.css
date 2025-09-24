@@ -1,0 +1,416 @@
+/* Nelly's Needlers Brand Theme - Overriding Pulse Bootswatch */
+
+/* Import Google Fonts or define font faces */
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap'); /* Fallback font */
+
+/* Define font faces for Amasis MT Pro (if using web font) */
+/* Note: Amasis MT Pro is a premium font - you may need to purchase web license */
+@font-face {
+  font-family: 'Amasis MT Pro';
+  src: url('../fonts/AmasisMTPro-Regular.woff2') format('woff2'),
+       url('../fonts/AmasisMTPro-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Amasis MT Pro';
+  src: url('../fonts/AmasisMTPro-Bold.woff2') format('woff2'),
+       url('../fonts/AmasisMTPro-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Define font face for Monotype Corsiva */
+@font-face {
+  font-family: 'Monotype Corsiva';
+  src: url('../fonts/MonotypeCorsiva.woff2') format('woff2'),
+       url('../fonts/MonotypeCorsiva.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Primary Brand Colors */
+  --bs-primary: #853a3b;    /* Burgundy */
+  --bs-primary-rgb: 133, 58, 59;
+  
+  --bs-secondary: #002060;  /* Blue */
+  --bs-secondary-rgb: 0, 32, 96;
+
+  /* Extended color palette */
+  --bs-success: #853a3b;
+  --bs-info: #002060;
+  --bs-warning: #ffc107;
+  --bs-danger: #dc3545;
+  
+  /* Light/Dark variants */
+  --bs-light: #f8f9fa;
+  --bs-dark: #212529;
+
+  /* Custom brand colors */
+  --bs-burgundy: #853a3b;
+  --bs-burgundy-light: #a55c5d;
+  --bs-burgundy-dark: #6a2e2f;
+  
+  --bs-nellys-blue: #002060;
+  --bs-nellys-blue-light: #003099;
+  --bs-nellys-blue-dark: #001947;
+
+  /* Brand Fonts */
+  --bs-font-sans-serif: 'Amasis MT Pro', Georgia, 'Times New Roman', serif;
+  --bs-font-serif: 'Amasis MT Pro', Georgia, 'Times New Roman', serif;
+  --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --bs-font-script: 'Monotype Corsiva', cursive;
+
+  /* Body colors */
+  --bs-body-bg: #fff;
+  --bs-body-color: #212529;
+  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-font-size: 1rem;
+  --bs-body-font-weight: 400;
+  --bs-body-line-height: 1.5;
+  
+  /* Link colors */
+  --bs-link-color: #002060;
+  --bs-link-hover-color: #001947;
+
+  /* Headings */
+  --bs-heading-font-family: var(--bs-font-sans-serif);
+  --bs-heading-font-weight: 700;
+}
+
+/* Apply fonts to entire document */
+body {
+  font-family: var(--bs-body-font-family);
+  font-size: var(--bs-body-font-size);
+  font-weight: var(--bs-body-font-weight);
+  line-height: var(--bs-body-line-height);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--bs-heading-font-family);
+  font-weight: var(--bs-heading-font-weight);
+}
+
+/* Script font for special headers */
+.script-font {
+  font-family: var(--bs-font-script) !important;
+}
+
+/* Enhanced button styles */
+.btn-primary {
+  --bs-btn-bg: var(--bs-burgundy);
+  --bs-btn-border-color: var(--bs-burgundy);
+  --bs-btn-hover-bg: #6a2e2f;
+  --bs-btn-hover-border-color: #6a2e2f;
+  --bs-btn-active-bg: #5a2627;
+  --bs-btn-active-border-color: #5a2627;
+  font-family: var(--bs-body-font-family);
+}
+
+/* Override Bootswatch Pulse theme colors for outline buttons */
+.btn-outline-primary {
+  --bs-btn-color: var(--bs-burgundy) !important;
+  --bs-btn-border-color: var(--bs-burgundy) !important;
+  --bs-btn-hover-color: #fff !important;
+  --bs-btn-hover-bg: var(--bs-burgundy) !important;
+  --bs-btn-hover-border-color: var(--bs-burgundy) !important;
+  --bs-btn-focus-shadow-rgb: 133, 58, 59 !important;
+  --bs-btn-active-color: #fff !important;
+  --bs-btn-active-bg: var(--bs-burgundy) !important;
+  --bs-btn-active-border-color: var(--bs-burgundy) !important;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;
+  --bs-btn-disabled-color: var(--bs-burgundy) !important;
+  --bs-btn-disabled-bg: transparent !important;
+  --bs-btn-disabled-border-color: var(--bs-burgundy) !important;
+  --bs-gradient: none !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  color: #fff !important;
+  background-color: var(--bs-burgundy) !important;
+  border-color: var(--bs-burgundy) !important;
+}
+
+.btn-outline-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(133, 58, 59, 0.25) !important;
+}
+
+/* Also fix the regular primary button to ensure consistency */
+.btn-primary {
+  --bs-btn-bg: var(--bs-burgundy) !important;
+  --bs-btn-border-color: var(--bs-burgundy) !important;
+  --bs-btn-hover-bg: var(--bs-burgundy-dark) !important;
+  --bs-btn-hover-border-color: var(--bs-burgundy-dark) !important;
+  --bs-btn-focus-shadow-rgb: 133, 58, 59 !important;
+}
+
+/* Fix for the password toggle button specifically */
+.btn-outline-secondary {
+  margin-left: 6px !important;
+  color: var(--bs-nellys-blue) !important;
+  border-color: var(--bs-nellys-blue) !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--bs-nellys-blue) !important;
+  color: white !important;
+  border-color: var(--bs-nellys-blue) !important;
+}
+
+.btn-outline-secondary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(133, 58, 59, 0.25) !important;
+}
+
+.btn-secondary {
+  --bs-btn-bg: var(--bs-nellys-blue);
+  --bs-btn-border-color: var(--bs-nellys-blue);
+  --bs-btn-hover-bg: #001947;
+  --bs-btn-hover-border-color: #001947;
+  --bs-btn-active-bg: #001233;
+  --bs-btn-active-border-color: #001233;
+  font-family: var(--bs-body-font-family);
+}
+
+/* Navbar customization */
+.navbar {
+  --bs-navbar-brand-color: var(--bs-burgundy);
+  --bs-navbar-brand-hover-color: var(--bs-burgundy-dark);
+  --bs-navbar-color: var(--bs-nellys-blue);
+  --bs-navbar-hover-color: var(--bs-nellys-blue-dark);
+  --bs-navbar-active-color: var(--bs-burgundy);
+  font-family: var(--bs-body-font-family);
+}
+
+.navbar.bg-primary {
+  background-color: var(--bs-burgundy) !important;
+}
+
+.navbar.bg-primary .navbar-brand,
+.navbar.bg-primary .navbar-nav .nav-link,
+.navbar.bg-primary .navbar-nav .dropdown-toggle {
+  color: #ffffff !important;
+}
+
+.navbar.bg-primary .navbar-nav .nav-link:hover,
+.navbar.bg-primary .navbar-nav .dropdown-toggle:hover {
+  color: #a7a4a4 !important;
+  opacity: 0.8;
+}
+
+/* Ensure icons are white too */
+.navbar.bg-primary .nav-link .react-icon {
+  color: #ffffff !important;
+}
+
+.navbar-brand {
+  font-family: var(--bs-heading-font-family);
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+/* Card customizations */
+.card {
+  --bs-card-border-color: rgba(133, 58, 59, 0.125);
+  font-family: var(--bs-body-font-family);
+}
+
+.card-header {
+  background-color: rgba(133, 58, 59, 0.03);
+  border-bottom-color: rgba(133, 58, 59, 0.125);
+  font-family: var(--bs-heading-font-family);
+  font-weight: 600;
+}
+
+/* Form customizations */
+.form-control, .form-select {
+  font-family: var(--bs-body-font-family);
+}
+
+.form-control:focus {
+  border-color: var(--bs-burgundy);
+  box-shadow: 0 0 0 0.25rem rgba(133, 58, 59, 0.25);
+}
+
+.form-check-input:checked {
+  background-color: var(--bs-burgundy);
+  border-color: var(--bs-burgundy);
+}
+
+.form-label {
+  font-family: var(--bs-body-font-family);
+  font-weight: 500;
+}
+
+/* Alert customizations */
+.alert {
+  font-family: var(--bs-body-font-family);
+}
+
+.alert-primary {
+  --bs-alert-color: var(--bs-burgundy-dark);
+  --bs-alert-bg: rgba(133, 58, 59, 0.1);
+  --bs-alert-border-color: rgba(133, 58, 59, 0.3);
+}
+
+/* Table customizations */
+.table {
+  font-family: var(--bs-body-font-family);
+}
+
+/* Badge customizations */
+.badge {
+  font-family: var(--bs-body-font-family);
+}
+
+.badge.bg-primary {
+  background-color: var(--bs-burgundy) !important;
+}
+
+/* Progress bar */
+.progress-bar {
+  background-color: var(--bs-burgundy);
+  font-family: var(--bs-body-font-family);
+}
+
+/* Custom component for Nelly's branding */
+.nellys-brand-header {
+  background: linear-gradient(135deg, var(--bs-burgundy) 0%, var(--bs-nellys-blue) 100%);
+  color: white;
+  padding: 2rem 0;
+  font-family: var(--bs-heading-font-family);
+}
+
+.nellys-brand-header h1 {
+  font-family: var(--bs-font-script);
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.nellys-brand-header .subtitle {
+  font-family: var(--bs-body-font-family);
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* Stitching-inspired decorative elements */
+.stitching-border {
+  border: 2px dashed var(--bs-burgundy);
+  padding: 1rem;
+  background-color: rgba(133, 58, 59, 0.05);
+  font-family: var(--bs-body-font-family);
+}
+
+.stitching-border h2, .stitching-border h3, .stitching-border h4 {
+  font-family: var(--bs-font-script);
+  color: var(--bs-burgundy);
+}
+
+/* Utility classes for fonts */
+.font-script {
+  font-family: var(--bs-font-script) !important;
+}
+
+.font-body {
+  font-family: var(--bs-body-font-family) !important;
+}
+
+.font-heading {
+  font-family: var(--bs-heading-font-family) !important;
+}
+
+/* Dropdown menu fonts */
+.dropdown-menu {
+  font-family: var(--bs-body-font-family);
+}
+
+.dropdown-header {
+  font-family: var(--bs-heading-font-family);
+  font-weight: 600;
+}
+
+/* Modal fonts */
+.modal-title {
+  font-family: var(--bs-heading-font-family);
+  font-weight: 600;
+}
+
+.modal-body {
+  font-family: var(--bs-body-font-family);
+}
+
+/* Tooltip and popover fonts */
+.tooltip {
+  font-family: var(--bs-body-font-family);
+}
+
+.popover {
+  font-family: var(--bs-body-font-family);
+}
+
+.popover-header {
+  font-family: var(--bs-heading-font-family);
+  font-weight: 600;
+}
+
+/* Password toggle button styling */
+.input-group .btn-outline-secondary {
+  --bs-btn-color: var(--bs-burgundy) !important;
+  --bs-btn-border-color: var(--bs-burgundy) !important;
+  --bs-btn-hover-color: #ffffff !important;
+  --bs-btn-hover-bg: var(--bs-burgundy) !important;
+  --bs-btn-hover-border-color: var(--bs-burgundy) !important;
+  --bs-btn-active-color: #ffffff !important;
+  --bs-btn-active-bg: var(--bs-burgundy-dark) !important;
+  --bs-btn-active-border-color: var(--bs-burgundy-dark) !important;
+  --bs-btn-disabled-color: var(--bs-burgundy) !important;
+  --bs-btn-disabled-bg: transparent !important;
+  --bs-btn-disabled-border-color: var(--bs-burgundy) !important;
+}
+
+/* Focus states for the toggle button */
+.input-group .btn-outline-secondary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(133, 58, 59, 0.25) !important;
+}
+
+/* Ensure the icons inside the button are properly colored */
+.input-group .btn-outline-secondary svg {
+  color: inherit !important;
+}
+
+/* Specific styling for the password input group */
+.input-group:has(.btn-outline-secondary) .form-control:focus {
+  z-index: 3; /* Ensure proper stacking */
+  border-color: var(--bs-burgundy);
+}
+
+/* Target specific footer sections */
+footer .d-flex.justify-content-center .d-flex.align-items-center {
+  align-items: baseline !important; /* Use baseline alignment */
+}
+
+/* Fix for the GPS/map marker icon specifically */
+footer .fa-map-marker-alt {
+  position: relative;
+  top: 2px; /* Adjust this value until it looks right */
+}
+
+/* Fix for envelope icon */
+footer .fa-envelope {
+  position: relative;
+  top: 1px;
+}
+
+/* Fix for link icon */
+footer .fa-link {
+  position: relative;
+  top: 1px;
+}

@@ -133,7 +133,7 @@ function HomePage() {
                                 Learn from experienced instructors and fellow Nelly's to refine your skills or learn a new technique.
                                 With our broad range of expertise, there is sure to be something for all skill levels!
                             </Card.Text>
-                            <Button variant="outline-success">Learn More</Button>
+                            <Button variant="outline-secondary">Learn More</Button>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -152,7 +152,7 @@ function HomePage() {
                                 and be sure to save room for dessert. Our Lemon Tarts, Decadent Chocolate Cake, 
                                 and Martha Washington's Ginger Cookies are not to be missed!
                             </Card.Text>
-                            <Button variant="outline-warning">Café Details</Button>
+                            <Button variant="outline-secondary">Café Details</Button>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -192,19 +192,19 @@ function HomePage() {
                         <h2 className="mb-4">Making a Difference One Stitch at a Time</h2>
                         <Row>
                             <Col sm={6} md={3} className="mb-3">
-                                <h3 className="display-6 text-primary">60+</h3>
+                                <h3 className="display-6 text-secondary">60+</h3>
                                 <p className="text-muted">Active Members</p>
                             </Col>
                             <Col sm={6} md={3} className="mb-3">
-                                <h3 className="display-6 text-primary">45</h3>
+                                <h3 className="display-6 text-secondary">45</h3>
                                 <p className="text-muted">Years of the Annual Children's Workshop</p>
                             </Col>
                             <Col sm={6} md={3} className="mb-3">
-                                <h3 className="display-6 text-primary">1000+</h3>
+                                <h3 className="display-6 text-secondary">1000+</h3>
                                 <p className="text-muted">Lemon Tarts Served</p>
                             </Col>
                             <Col sm={6} md={3} className="mb-3">
-                                <h3 className="display-6 text-primary">50</h3>
+                                <h3 className="display-6 text-secondary">50</h3>
                                 <p className="text-muted">Years and Counting</p>
                             </Col>
                         </Row>
@@ -229,8 +229,8 @@ function HomePage() {
                                 <Button variant="outline-primary" size="lg" className="me-3">
                                     Learn More
                                 </Button>
-                                <Button variant="success" size="lg">
-                                    <i className="fas fa-heart me-2"></i>Donate
+                                <Button variant="outline-secondary" size="lg">
+                                    Donate
                                 </Button>
                             </div>
                             <div className="mt-3">

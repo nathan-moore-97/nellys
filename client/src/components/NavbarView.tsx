@@ -8,6 +8,7 @@ import ProtectedComponent from './auth/ProtectedComponent';
 import { FaCalendarAlt, FaImages, FaEnvelope } from 'react-icons/fa';
 import { UserRole } from './auth/UserRole';
 import { LogoutButton } from './auth/LogoutButton';
+import nellyslogo from '../assets/sewing-bird-grayscale-transparent.png'
 
 function NavbarView() {
     const [expanded, setExpanded] = useState(false);
@@ -17,13 +18,21 @@ function NavbarView() {
         <Navbar 
             expanded={expanded} 
             bg="primary" 
-            variant="dark" 
             expand="lg" 
             className="shadow-sm"
         >
             <Container fluid="lg">
                 <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
-                    Nelly's Needlers
+                    <img 
+                        src={nellyslogo} 
+                        alt="Nelly's Needlers Sewing Bird Logo"
+                        height="40"
+                        width="40"
+                        className="me-2"
+                        style={{ objectFit: 'contain' }}
+                    />
+                    {/* Brand Text */}
+                    <span className="fw-bold text-white">Nelly's Needlers</span>
                 </Navbar.Brand>
                         
                 <Navbar.Toggle 
