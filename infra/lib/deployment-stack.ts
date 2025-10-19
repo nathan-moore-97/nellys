@@ -89,7 +89,7 @@ export class DeploymentStack extends cdk.Stack {
 
         let contentBucket;
 
-       if (createContentBucket) {
+        if (createContentBucket) {
             contentBucket = new s3.Bucket(this, 'ContentBucket', {
                 bucketName: `nellysdev-content-${this.account}`,
                 blockPublicAccess: new s3.BlockPublicAccess({
@@ -112,17 +112,8 @@ export class DeploymentStack extends cdk.Stack {
                 resources: [contentBucket.arnForObjects('*')],
             }));
         } else {
-            // Import existing bucket and add policy
+            // Reference the existing bucket - no policy changes needed if already configured
             contentBucket = s3.Bucket.fromBucketName(this, 'ContentBucket', `nellysdev-content-${this.account}`);
-            
-            // For existing buckets, you might need to manually apply the policy
-            contentBucket.addToResourcePolicy(new iam.PolicyStatement({
-                sid: 'PublicReadGetObject',
-                effect: iam.Effect.ALLOW,
-                principals: [new iam.AnyPrincipal()],
-                actions: ['s3:GetObject'],
-                resources: [`arn:aws:s3:::nellysdev-content-${this.account}/*`],
-            }));
         }
 
         // DNS - Corrected hosted zone creation
@@ -206,14 +197,6 @@ export class DeploymentStack extends cdk.Stack {
 
         new cdk.CfnOutput(this, "Backend", {
             value: `http://${backendInstance.instancePublicDnsName} (${backendInstance.instancePublicIp})`,
-        });
-        
-        new cdk.CfnOutput(this, "GalleryBucketMsg", {
-            value: galleryBucket.bucketName,
-        });
-
-        new cdk.CfnOutput(this, "ContentBucketMsg", {
-            value: contentBucket.bucketName,
         });
     }
 }
