@@ -39,6 +39,8 @@
    },
    "scripts": {
       "start": "ts-node src/index.ts",
+      "build": "tsc",
+      "start:prod": "node build/index.js",
       "typeorm": "typeorm-ts-node-commonjs",
       "test": "jest --verbose",
       "test:watch": "jest --watch"

@@ -7,8 +7,10 @@ import { UserRegistration } from "./entity/UserRegistration";
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
-    database: "database.sqlite",
-    synchronize: true,
+    database: process.env.NODE_ENV === "prod" 
+        ? "/app/data/database.sqlite" 
+        : "database.sqlite",
+    synchronize: process.env.NODE_ENV !== "prod",
     logging: false,
     entities: [NewsletterSignup, GalleryImage, User, UserRegistration],
     migrations: [],

@@ -7,7 +7,7 @@ import { Readable } from 'stream';
 import logger from '../logging/Logger';
 
 export interface StorageService {
-    getFrom(image: GalleryImage): Promise<NonSharedBuffer>;
+    getFrom(image: GalleryImage): Promise<Buffer>;
     loadImages();
 }
 
@@ -62,7 +62,7 @@ export class S3StorageService implements StorageService {
 
     async loadImages() {
         const repo = AppDataSource.getRepository(GalleryImage);
-        repo.clear();
+        await repo.clear();
 
         const Bucket = this.bucketName;
 
@@ -84,7 +84,7 @@ export class S3StorageService implements StorageService {
         logger.info(`Loaded ${response.Contents.length} images`);
     }
 
-    async getFrom(image: GalleryImage): Promise<NonSharedBuffer> {
+    async getFrom(image: GalleryImage): Promise<Buffer> {
         const command = new GetObjectCommand({
             Bucket: this.bucketName,
             Key: image.filename,
