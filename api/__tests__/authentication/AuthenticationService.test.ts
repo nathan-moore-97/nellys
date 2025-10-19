@@ -39,7 +39,7 @@ describe('AuthenticationService', () => {
             delete: jest.fn(),
         } as unknown as jest.Mocked<Repository<UserRegistration>>;
 
-        authService = new AuthenticationService(mockedUserRepo, mockedRegistrationRepo);
+        authService = new AuthenticationService(mockedUserRepo);
     });
 
     test('should register a new user in the database', async () => {
