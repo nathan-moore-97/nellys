@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ./api/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./api/.env
+    environment:
+      # Override the database path for Docker
+      - DATABASE_PATH=/app/data/database.sqlite
+      - ENVIORNMENT=prod
+    volumes:
+      - sqlite_data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./client/
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+volumes:
+  sqlite_data:

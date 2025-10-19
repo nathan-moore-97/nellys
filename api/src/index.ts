@@ -74,5 +74,9 @@ AppDataSource.initialize().then(async () => {
     
     app.listen(3000);
     logger.info("Server started at http://localhost:3000/");
+    logger.info(`App running in ${process.env.ENVIORNMENT}`);
 
-}).catch(error => logger.error(error))
+}).catch(error =>{
+    logger.error("Data source failed to initialize:", error?.message);
+    logger.error("")
+})
