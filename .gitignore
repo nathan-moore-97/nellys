@@ -89,3 +89,6 @@ cdk.out
 /photosContent/
 
 */coverage/
+
+#terraform
+terraform.tfvars
