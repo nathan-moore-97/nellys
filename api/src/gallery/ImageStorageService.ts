@@ -30,6 +30,7 @@ export class LocalStorageService implements StorageService {
         fs.readdir(path.join(__dirname, '../../../photos'), async (err, files) => {
 
             if (err) {
+                logger.error("Error loading gallery photos");
                 console.error(err);
                 return;
             }
@@ -50,8 +51,8 @@ export class LocalStorageService implements StorageService {
 
     }
 
-    async getFrom(image: GalleryImage): Promise<NonSharedBuffer> {
-        return await fs.readFileSync(image.url);
+    async getFrom(image: GalleryImage): Promise<Buffer> {
+        return fs.readFileSync(image.url);
     }
 }
 
@@ -63,6 +64,11 @@ export class S3StorageService implements StorageService {
     async loadImages() {
         const repo = AppDataSource.getRepository(GalleryImage);
         await repo.clear();
+
+        if (!this.bucketName) {
+            logger.error("No bucket name found, skipping image loading");
+            return;
+        }
 
         const Bucket = this.bucketName;
 
