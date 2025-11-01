@@ -1,0 +1,19 @@
+services:
+  frontend:
+    image: nathanmoore6807/nellys-frontend:latest
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  backend:
+    image: nathanmoore6807/nellys-backend:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_PATH=/app/data/database.sqlite
+    volumes:
+      - /opt/nellys/data:/app/data

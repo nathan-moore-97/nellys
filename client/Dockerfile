@@ -9,8 +9,7 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci
 
-# Copy .env and source code
-COPY .env .env
+# source code
 COPY . .
 
 # Build the app (Vite reads from .env automatically)
