@@ -1,28 +1,56 @@
-version: '3.8'
 services:
-  backend:
+  caddy:
+    container_name: nellys-caddy
+    image: caddy:latest
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'  # HTTP/3 support
+    volumes:
+      - caddy-config:/config
+      - caddy-data:/data
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - nellys-network
+    depends_on:
+      - api
+      - client
+
+  api:
+    container_name: nellys-api
     build:
       context: ./api/
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     env_file:
       - ./api/.env
     environment:
-      # Override the database path for Docker
       - DATABASE_PATH=/app/data/database.sqlite
       - ENVIORNMENT=prod
     volumes:
       - sqlite_data:/app/data
     restart: unless-stopped
+    networks:
+      - nellys-network
 
-  frontend:
+  client:
+    container_name: nellys-client
     build:
       context: ./client/
       dockerfile: Dockerfile
-    ports:
-      - "80:80"
+    expose:
+      - "5173"
     restart: unless-stopped
+    networks:
+      - nellys-network
 
 volumes:
   sqlite_data:
+  caddy-config:
+  caddy-data:
+
+networks:
+  nellys-network:
+    driver: bridge

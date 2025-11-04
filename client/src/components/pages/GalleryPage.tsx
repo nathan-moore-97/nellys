@@ -15,10 +15,8 @@ interface PhotoListResponse {
     images: GalleryItem[];
 }
 
-const API_URL = import.meta.env.VITE_API_URL
-
 async function fetchImagePage(pageNumber: number) {
-    const resp = await fetch(`${API_URL}/gallery/`, {
+    const resp = await fetch(`/api/gallery/`, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'

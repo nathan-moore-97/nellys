@@ -11,10 +11,8 @@ interface UnsubscribeResponse {
     error: string | null;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 async function unsubscribeToNewsletter(params: UnsubscribeRequest): Promise<UnsubscribeResponse> {
-    const response = await fetch(`${API_URL}/newsletter`, {
+    const response = await fetch(`/api/newsletter`, {
         method: 'DELETE',
         headers: {
             'Content-type': 'application/json',
@@ -76,19 +74,15 @@ function UnsubscribePage() {
      */
     if (err) {
         return (
-            <>
-                <Alert variant="danger">{err}</Alert>
-            </>
+            <Alert variant="danger">{err}</Alert>
         );
     }
 
     if (unsubscribed) {
         return (
-            <>
-                <Alert variant="success">
-                    You have successfully unsubscribed from the newsletter.
-                </Alert>
-            </>
+            <Alert variant="success">
+                You have successfully unsubscribed from the newsletter.
+            </Alert>
         )
     }
 

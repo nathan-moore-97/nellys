@@ -25,10 +25,8 @@ interface RegisterUserForm {
     roleId: number;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 async function getAllUsers(): Promise<UserEntry[]> {
-    const response = await fetch(`${API_URL}/admin/users`, {
+    const response = await fetch(`/api/admin/users`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -39,7 +37,7 @@ async function getAllUsers(): Promise<UserEntry[]> {
 }
 
 async function updateUserRole(roleUpdateFormData: RoleUpdateForm): Promise<void> {
-    await fetch(`${API_URL}/admin/users/role`, {
+    await fetch(`/api/admin/users/role`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -55,7 +53,7 @@ async function updateUserRole(roleUpdateFormData: RoleUpdateForm): Promise<void>
 }
 
 async function registerUser(roleUpdateFormData: RegisterUserForm): Promise<void> {
-    await fetch(`${API_URL}/register/create`, {
+    await fetch(`/api/register/create`, {
         method: 'POST',
         credentials: 'include',
         headers: {

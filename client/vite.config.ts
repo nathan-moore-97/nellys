@@ -6,5 +6,13 @@ export default defineConfig(({ mode }) => {
   loadEnv(mode, process.cwd());
   return {
     plugins: [react()],
+    server: {
+      host: "0.0.0.0",
+      allowedHosts: ['nellysneedlers'],
+      watch: {
+        usePolling: true,
+        interval: 100,
+      },
+    }
   };
 });

@@ -15,11 +15,8 @@ interface NewsletterSignupEntry {
 }
 
 
-const API_URL = import.meta.env.VITE_API_URL;
-
-
 async function getAllSignups(): Promise<NewsletterSignupEntry[]> {
-    const response = await fetch(`${API_URL}/newsletter`, {
+    const response = await fetch(`/api/newsletter`, {
         method: 'GET',
         credentials: 'include',
         headers: {

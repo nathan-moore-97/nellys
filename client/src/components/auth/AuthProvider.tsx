@@ -21,8 +21,6 @@ interface AuthProviderProps {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export function AuthProvider(props: AuthProviderProps) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setIsLoading] = useState(true);
@@ -37,7 +35,7 @@ export function AuthProvider(props: AuthProviderProps) {
 
     const refreshToken = async(): Promise<boolean> => {
         try {
-            const response = await fetch(`${API_URL}/auth/refresh`, {
+            const response = await fetch(`/api/auth/refresh`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -54,7 +52,7 @@ export function AuthProvider(props: AuthProviderProps) {
 
     const loginUser = async (username: string, password: string): Promise<boolean> => {
         try {
-            const response = await fetch(`${API_URL}/auth`, {
+            const response = await fetch(`/api/auth`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -88,7 +86,7 @@ export function AuthProvider(props: AuthProviderProps) {
     const logoutUser = async () => {
         console.log("Logout called")
         try {
-            await fetch(`${API_URL}/auth/logout`, {
+            await fetch(`/api/auth/logout`, {
                 method: 'POST',
                 credentials: 'include',
             });

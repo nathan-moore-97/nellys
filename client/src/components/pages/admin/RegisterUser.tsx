@@ -3,8 +3,6 @@ import { Alert, Button, Form } from "react-bootstrap";
 import { FaSignInAlt } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 function RegisterUser() {
     const [searchParams] = useSearchParams();
     const [token, setToken] = useState<string | null>(null);
@@ -57,7 +55,7 @@ function RegisterUser() {
     }, [searchParams]);
 
     const verifyToken = async(tokenParam: string) => {
-        const response = await fetch(`${API_URL}/register/verify`, {
+        const response = await fetch(`/api/register/verify`, {
             method: "POST",
             headers: {
                 'Content-type': 'application/json',
@@ -70,7 +68,7 @@ function RegisterUser() {
     }
 
     const registerNewUser = async() => {
-        const response = await fetch(`${API_URL}/register`, {
+        const response = await fetch(`/api/register`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',

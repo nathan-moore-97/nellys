@@ -1,0 +1,9 @@
+nellysneedlers {
+    tls internal
+    handle_path /* {
+        reverse_proxy client:5173
+    }
+    handle_path /api/* {
+        reverse_proxy api:3000
+    }
+}

@@ -12,6 +12,7 @@ import cookieParser from "cookie-parser";
 import logger from "./logging/Logger";
 import { authenticateJWT } from "./middleware/JWTAuthenticatorMiddleware";
 import { requireRoleLevel } from "./middleware/RoleValidatorMiddleware";
+import seedInitialAdmin from "./utils/EnsureInitialAdmin";
 
 AppDataSource.initialize().then(async () => {
 
@@ -29,14 +30,15 @@ AppDataSource.initialize().then(async () => {
         delayMs: () => 2000,
     });
 
-    // app.use(cors({
-    //     origin: process.env.WEB_APP_ROOT_URL, 
-    //     credentials: true, 
-    // }));
-
-    app.use(cors());
+    app.use(cors({
+        origin: process.env.WEB_APP_ROOT_URL, 
+        credentials: true, 
+    }));
 
     app.use(cookieParser());
+
+    // Trust reverse proxy
+    app.set("trust proxy", 1);
 
     app.use(bodyParser.json());
 
@@ -71,9 +73,10 @@ AppDataSource.initialize().then(async () => {
     });
     
     StorageServiceFactory.Create().loadImages();
+    seedInitialAdmin();
     
     app.listen(3000);
-    logger.info("Server started at http://localhost:3000/");
+    logger.info("Server started on port 3000");
     logger.info(`App running in ${process.env.ENVIORNMENT}`);
 
 }).catch(error =>{

@@ -32,7 +32,7 @@ Set-Location "..\"
 Write-Host ""
 Write-Host "🔨 Building frontend..." -ForegroundColor Cyan
 Set-Location ".\client"
-docker build -t "$DockerUser/nellys-frontend:latest" --no-cache --build-arg VITE_API_URL="http://${IpAddress}:3000" .
+docker build -t "$DockerUser/nellys-frontend:latest" --no-cache .
 
 Write-Host ""
 Write-Host "⬆️  Pushing frontend..." -ForegroundColor Cyan

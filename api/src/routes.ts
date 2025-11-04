@@ -56,7 +56,7 @@ export const Routes = [
         controller: RegistrationController,
         action: "createRegistrationToken",
         rateLimited: true,
-        protected: true,
+        protected: true, // TODO Figure out how to seed the database with an ADMIN user... securely
         requires: UserRole.ADMIN
     },
     {

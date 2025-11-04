@@ -12,11 +12,9 @@ interface SignupResponse {
     error: string | null,
 }
 
-const API_URL = import.meta.env.VITE_API_URL
-
 async function subscribeToNewsletter(params: SignupRequest): Promise<SignupResponse> {
 
-    const response = await fetch(`${API_URL}/newsletter`, {
+    const response = await fetch(`/api/newsletter`, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json',
